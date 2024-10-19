@@ -48,7 +48,7 @@ export default function ListItem() {
   // Main function to list an item. First it mint an NFT and then List an nft.
   const createItem = async (url) => {
     console.log("Token metadata url: ", url);
-    setisListing(true)
+    setisListing(true);
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
