@@ -28,8 +28,8 @@ export default function Navbar() {
               <div>
                 <span className="px-2 mr-2 md:border-r border-gray-800">
                   <img
-                    src="https://www.freepnglogos.com/uploads/spotify-logo-png/file-spotify-logo-png-4.png"
-                    alt="alt placeholder"
+                      src="https://img.freepik.com/premium-vector/print_1174912-11140.jpg?w=1380"
+                      alt="Logo Placeholder"
                     className="w-8 h-8 -mt-1 inline mx-auto"
                   />
                 </span>
@@ -40,7 +40,7 @@ export default function Navbar() {
                     <a
                       id={id}
                       className={`px-2 py-1 flex items-center cursor-pointer hover:bg-gray-200 hover:text-gray-700 text-sm rounded ${
-                        router.pathname == link
+                        router.pathname === link
                           ? "text-gray-700 font-semibold"
                           : ""
                       }`}
@@ -76,37 +76,38 @@ export default function Navbar() {
           {/* Mobile Navbar */}
           <div
             id="navbar"
-            className={`pt-0 absolute top-2 z-100 mx-auto ${
+            className={`pt-0 absolute top-0 z-50 mx-auto ${
               isMobileNavOpen ? "translate-x-0" : "-translate-x-full"
             } transition-all flex-wrap md:hidden`}
           >
             <div className="py-[.5px] w-64">
-              <div className="w-full py-4 space-y-6 px-2 text-gray-900 bg-white rounded-lg min-h-screen  text-left capitalize font-medium shadow-lg">
+              <div
+                  className="w-full py-4 space-y-6 px-2 text-gray-900 bg-white rounded-lg min-h-screen  text-left capitalize font-medium shadow-lg">
                 <img
-                  src="https://www.freepnglogos.com/uploads/spotify-logo-png/file-spotify-logo-png-4.png"
-                  alt="alt placeholder"
-                  className="w-8 h-8 mx-auto mb-5 "
+                    src="https://img.freepik.com/premium-vector/print_1174912-11140.jpg?w=1380"
+                    alt="alt placeholder"
+                    className="w-8 h-8 mx-auto mb-5 "
                 />
-                {navLinks?.map(({ title, link, icon }, id) => (
-                  <Link key={id} href={link}>
-                    <a
-                      id={id}
-                      className={`px-2 flex items-center cursor-pointer hover:bg-gray-200 hover:text-gray-700 text-sm rounded ${
-                        router.pathname == link
-                          ? "text-gray-700 font-semibold"
-                          : ""
-                      }`}
-                    >
-                      <span className="p-2 bg-gray-200 rounded-full">{icon}</span>
-                      <span className="mx-1">{title}</span>
-                    </a>
-                  </Link>
+                {navLinks?.map(({title, link, icon}, id) => (
+                    <Link key={id} href={link}>
+                      <a
+                          id={id}
+                          className={`px-2 flex items-center cursor-pointer hover:bg-gray-200 hover:text-gray-700 text-sm rounded ${
+                              router.pathname === link
+                                  ? "text-gray-700 font-semibold"
+                                  : ""
+                          }`}
+                      >
+                        <span className="p-2 bg-gray-200 rounded-full">{icon}</span>
+                        <span className="mx-1">{title}</span>
+                      </a>
+                    </Link>
                 ))}
                 <BtnMain
-                  text="List NFT"
-                  icon={<AiOutlinePlus className="text-2xl" />}
-                  className="w-full !rounded-full"
-                  onClick={handleClick}
+                    text="List NFT"
+                    icon={<AiOutlinePlus className="text-2xl"/>}
+                    className="w-full !rounded-full"
+                    onClick={handleClick}
                 />
               </div>
             </div>

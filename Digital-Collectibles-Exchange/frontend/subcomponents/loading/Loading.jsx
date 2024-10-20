@@ -13,7 +13,7 @@ const Loading = ({ type = "dots" }) => (
           height="100"
           width="100"
           radius="9"
-          color="#48bb78"
+          color="rgb(59 130 246 / var(--tw-bg-opacity))"
           ariaLabel="three-dots-loading"
           wrapperStyle
           wrapperClass
