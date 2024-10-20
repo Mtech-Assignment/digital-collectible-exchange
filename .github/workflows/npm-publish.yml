@@ -1,0 +1,20 @@
+name: Node.js Package
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: |
+          cd Digital-Collectibles-Exchange
+          npm ci
+      - run: |
+          cd Digital-Collectibles-Exchange
+          npm run build  # Assuming you have a build script defined in package.json
