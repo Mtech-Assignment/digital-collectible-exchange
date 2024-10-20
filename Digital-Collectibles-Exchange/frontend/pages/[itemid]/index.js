@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { nftAddress, nftMarketplaceAddress, rpcProviderUrl } from "../../config/networkAddress";
+import { csdpAddress, nftAddress, nftMarketplaceAddress, rpcProviderUrl } from "../../config/networkAddress";
 import NFTAbi from "../../abi/NFT.json";
+import CSDPAbi from "../../abi/CSDP.json";
 import NFTMarketplaceAbi from "../../abi/NFTMarketplace.json";
 import axios from "axios";
 import Web3Modal from "web3modal";
@@ -28,7 +29,7 @@ export default function Itemid() {
       NFTMarketplaceAbi.abi,
       provider
     );
-    const data = await nftMarketPlaceContract.getPerticularItem(
+    const data = await nftMarketPlaceContract.getParticularItem(
       router.query.itemid
     );
     console.log(data);
@@ -36,7 +37,7 @@ export default function Itemid() {
     const allData = async () => {
       let convertedPrice = ethers.utils.formatUnits(
         data.price.toString(),
-        "ether"
+        18
       );
       const tokenUri = await nftContract.tokenURI(data.tokenId);
       const metaData = await axios.get(tokenUri);
@@ -70,14 +71,27 @@ export default function Itemid() {
       signer
     );
 
-    let convertedPrice = ethers.utils.parseUnits(price.toString(), "ether");
+    const CSDPTokenContract = new ethers.Contract(
+      csdpAddress,
+      CSDPAbi.abi,
+      signer
+    );
+
+    // let convertedPrice = ethers.utils.parseUnits(price.toString(), "ether");  // for price in ether
+    let convertedPrice = ethers.utils.parseUnits(price.toString(), 18); // for price in CSDP
+
+    // provide allowance of the CSDP to the marketplace contract
+    const csdpApprovalTxn = await CSDPTokenContract.approve(
+      nftMarketplaceAddress,
+      convertedPrice
+    );
+    await csdpApprovalTxn.wait();
+    console.log("Token approved")
 
     const transaction = await nftMarketPlaceContract.buyItem(
       nftAddress,
       tokenId,
-      {
-        value: convertedPrice,
-      }
+      // { value: convertedPrice, }
     );
     await transaction.wait();
     await router.push("/my-items");

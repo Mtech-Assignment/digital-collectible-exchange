@@ -19,7 +19,7 @@ export default function NftInfo({ nftData, children }) {
               </p>
               <p className="text-gray-600">{nftData?.description}</p>
               <p className="font-bold text-4xl text-green-500">
-                {nftData?.price.toString()} Ether
+                {nftData?.price.toString()} CSDP
               </p>
             </div>
 

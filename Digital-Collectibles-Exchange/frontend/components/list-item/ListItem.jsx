@@ -3,8 +3,9 @@ import { PinataSDK } from "pinata-web3";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import Web3Modal from "web3modal";
-import { nftAddress, nftMarketplaceAddress } from "../../config/networkAddress";
+import { nftAddress, nftMarketplaceAddress, csdpAddress } from "../../config/networkAddress";
 import NFTAbi from "../../abi/NFT.json";
+import CSDPAbi from "../../abi/CSDP.json";
 import NFTMarketplaceAbi from "../../abi/NFTMarketplace.json";
 import Input from "../../subcomponents/inputs/Input";
 import { AiOutlineArrowUp } from "react-icons/ai";
@@ -54,34 +55,56 @@ export default function ListItem() {
     const provider = new ethers.providers.Web3Provider(connection);
 
     const signer = provider.getSigner();
-    const nftContract = new ethers.Contract(nftAddress, NFTAbi.abi, signer);
-
-    let transaction = await nftContract.mintToken(url);
-    let tx = await transaction.wait();
-
-    let event = tx.events[0];
-    let value = event.args[2];
-    let tokenId = value.toNumber();
-
-    let convertedPrice = ethers.utils.parseUnits(formData.price, "ether");
+    const nftContract = new ethers.Contract(
+      nftAddress,
+      NFTAbi.abi,
+      signer
+    );
     const nftMarketPlaceContract = new ethers.Contract(
       nftMarketplaceAddress,
       NFTMarketplaceAbi.abi,
       signer
     );
+    const CSDPTokenContract = new ethers.Contract(
+      csdpAddress,
+      CSDPAbi.abi,
+      signer
+    );
 
+    let transaction = await nftContract.mintToken(url);
+    let tx = await transaction.wait();
+    console.log("Token minted Successfully");
+    let event = tx.events[0];
+    let value = event.args[2];
+    let tokenId = value.toNumber();
+    let convertedPrice = ethers.utils.parseUnits(formData.price, 18); // convert ether to wei
+    console.log("ConvertedPrice", convertedPrice);
     const listingPrice = await nftMarketPlaceContract.getListingPrice();
     listingPrice = await listingPrice.toString();
+    console.log("Listing Price", listingPrice);
+
+    const csdpApprovalTxn = await CSDPTokenContract.approve(
+      nftMarketplaceAddress,
+      listingPrice
+    );
+    await csdpApprovalTxn.wait();
+    console.log("Approval complete");
+    // let listingTx = await nftMarketPlaceContract.listItem(
+    //   nftAddress,
+    //   tokenId,
+    //   convertedPrice,
+    //   { value: listingPrice }
+    // );
+    console.log("Listitem complete");
     let listingTx = await nftMarketPlaceContract.listItem(
       nftAddress,
       tokenId,
-      convertedPrice,
-      { value: listingPrice }
+      convertedPrice
     );
     await listingTx.wait();
-    
+
+    setisListing(false);
     router.push("/");
-    setisListing(false)
   };
 
   const listAnItem = async () => {

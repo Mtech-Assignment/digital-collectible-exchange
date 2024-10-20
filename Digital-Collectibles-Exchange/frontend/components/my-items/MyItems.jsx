@@ -34,7 +34,7 @@ export default function MyItems() {
       data?.map(async (i) => {
         let convertedPrice = ethers.utils.formatUnits(
           i.price.toString(),
-          "ether"
+          18
         );
         const tokenUri = await nftContract.tokenURI(i.tokenId);
         const metaData = await axios.get(tokenUri);

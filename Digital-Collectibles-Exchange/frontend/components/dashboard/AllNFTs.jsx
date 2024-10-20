@@ -65,7 +65,7 @@ export default function AllNFTs() {
       {loading == true ? (
         <Loading />
       ) : (
-      <div>
+      <div className="flex flex-row space-x-4 overflow-x-auto">
         {allNFTs.length && !loading ? (
           allNFTs?.map((nft, index) => (
             <div key={index}>

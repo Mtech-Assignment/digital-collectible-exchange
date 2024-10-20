@@ -4,9 +4,11 @@ import {
   nftAddress,
   nftMarketplaceAddress,
   rpcProviderUrl,
+  csdpAddress,
 } from "../../../config/networkAddress";
 import NFTAbi from "../../../abi/NFT.json";
 import NFTMarketplaceAbi from "../../../abi/NFTMarketplace.json";
+import CSDPAbi from "../../../abi/CSDP.json";
 import axios from "axios";
 import Web3Modal from "web3modal";
 import { useRouter } from "next/router";
@@ -34,7 +36,7 @@ export default function MyItemId() {
       NFTMarketplaceAbi.abi,
       provider
     );
-    const data = await nftMarketPlaceContract.getPerticularItem(
+    const data = await nftMarketPlaceContract.getParticularItem(
       router.query.itemid
     );
     console.log(data);
@@ -42,7 +44,7 @@ export default function MyItemId() {
     const allData = async () => {
       let convertedPrice = ethers.utils.formatUnits(
         data.price.toString(),
-        "ether"
+        18
       );
       const tokenUri = await nftContract.tokenURI(data.tokenId);
       const metaData = await axios.get(tokenUri);
@@ -73,20 +75,29 @@ export default function MyItemId() {
       NFTMarketplaceAbi.abi,
       signer
     );
+    const CSDPTokenContract = new ethers.Contract(
+      csdpAddress,
+      CSDPAbi.abi,
+      signer
+    );
 
-    let convertedPrice = ethers.utils.parseUnits(price, "ether");
+    let convertedPrice = ethers.utils.parseUnits(price, 18);
 
     const listingPrice = await nftMarketPlaceContract.getListingPrice();
     listingPrice = await listingPrice.toString();
-    // tokenId.toNumber();
+
+    // provide allowance of the CSDP to the marketplace contract
+    const csdpApprovalTxn = await CSDPTokenContract.approve(
+      nftMarketplaceAddress,
+      listingPrice
+    );
+    await csdpApprovalTxn.wait();
 
     const transaction = await nftMarketPlaceContract.resellItem(
       nftAddress,
       tokenId,
       convertedPrice,
-      {
-        value: listingPrice,
-      }
+      // { value: listingPrice, }  // in case of sending ether
     );
     await transaction.wait();
     await router.push("/my-listed-items");
@@ -121,7 +132,7 @@ export default function MyItemId() {
               text="List NFT"
               icon={<AiOutlineArrowUp className="text-2xl" />}
               className="text-lg w-full"
-            //   onClick={() => alert("Feature Not Activated. Try Later ")}
+              onClick={() => resellNFT(resellPrice, nftData.tokenId)}
             />
           </div>
         )}

@@ -18,7 +18,7 @@ export default function Card({ nft, url="/" }) {
           </h5>
         <p className="mb-3 h-20 font-normal text-gray-600">{nft.description}</p>
         <h5 className="mb-2 text-xl font-semibold tracking-tight text-sky-800">
-          {nft.price.toString()} ETH
+          {nft.price.toString()} CSDP
         </h5>
           <BtnMain
             text="View More"
