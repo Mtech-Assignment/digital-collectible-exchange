@@ -1,5 +1,4 @@
 import React from "react";
-import { ethers } from "ethers";
 import Link from "next/link";
 import {AiOutlineArrowRight} from 'react-icons/ai'
 import { useRouter } from 'next/router';
@@ -8,7 +7,7 @@ import BtnMain from './../btns/BtnMain';
 export default function Card({ nft, url="/" }) {
   const router = useRouter();
   return (
-    <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow-lg">
+    <div className="max-w-xs bg-white border border-gray-200 rounded-lg shadow-lg m-10">
         <Link href={`${url}${nft.tokenId}`}>
         <img className="rounded-t-lg cursor-pointer object-cover  w-96 h-72" src={nft.image} alt={nft.name} />
         </Link>
@@ -16,7 +15,7 @@ export default function Card({ nft, url="/" }) {
           <h5 className="mb-3 text-2xl font-bold tracking-tight text-sky-600">
             {nft.name}
           </h5>
-        <p className="mb-3 h-20 font-normal text-gray-600">{nft.description}</p>
+        <p className="mb-3 h-4 font-normal text-gray-600">{nft.description}</p>
         <h5 className="mb-2 text-xl font-semibold tracking-tight text-sky-800">
           {nft.price.toString()} ETH
         </h5>
@@ -48,6 +47,6 @@ export default function Card({ nft, url="/" }) {
 
     // Anothrt Navbar
 
-   
+
   );
 }
