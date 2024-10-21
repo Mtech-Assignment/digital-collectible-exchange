@@ -6,9 +6,10 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /* Errors */
-error NFTMarketplace__ItemPriceIsLessThenZero();
+error NFTMarketplace__ItemPriceIsZero();
 error NFTMarketplace__ItemPriceNotMet();
 error NFTMarketplace__ListingPriceIsNotMet();
 error NFTMarketplace__YouAreNotOwnerOfThisItem();
@@ -20,9 +21,12 @@ contract NFTMarketplace is ReentrancyGuard {
     Counters.Counter private s_nftSold; // To count how many nfts are sold
 
     address payable private owner;
-    uint256 listingPrice = 0.025 ether; // This is the base price every seller has to pay for every listing.
+    uint256 listingPrice = 0.025 * (10 ** 18); // This is the base price every seller has to pay for every listing.
 
-    constructor() {
+    IERC20 public tradingToken;
+
+    constructor(address _erc20Address) {
+        tradingToken = IERC20(_erc20Address);
         owner = payable(msg.sender);
     }
 
@@ -30,8 +34,8 @@ contract NFTMarketplace is ReentrancyGuard {
         uint itemId;
         address nftContract;
         uint256 tokenId;
-        address payable seller;
-        address payable owner;
+        address seller;
+        address owner;
         uint256 price;
         bool sold;
     }
@@ -142,33 +146,28 @@ contract NFTMarketplace is ReentrancyGuard {
         return Items[_itemId];
     }
 
-    // Update Price
-    function updateItemPrice(uint256 _itemId, uint256 _price) external {
-        if (msg.sender != Items[_itemId].seller) {
-            revert NFTMarketplace__YouAreNotOwnerOfThisItem();
-        }
-
-        if (_price <= 0) {
-            revert NFTMarketplace__ItemPriceIsLessThenZero();
-        }
-
-        Items[_itemId].price = _price;
-    }
-
     // List a item;
     function listItem(
         address _nftAddress,
         uint256 _tokenId,
         uint256 _price
-    ) public payable nonReentrant {
-        if (_price < 0) { // price in wei
-            revert NFTMarketplace__ItemPriceIsLessThenZero();
+    ) public nonReentrant {
+        if (_price == 0) { // price in wei
+            revert NFTMarketplace__ItemPriceIsZero();
         }
 
-        if (msg.value != listingPrice) {
+        // in case of using ether as the marketplace trading
+        // if (msg.value != listingPrice) { 
+        //     revert NFTMarketplace__ListingPriceIsNotMet();
+        // }
+
+        // check if listingPrice is approved by the sender
+        if (tradingToken.allowance(msg.sender, address(this)) < listingPrice) {
             revert NFTMarketplace__ListingPriceIsNotMet();
         }
 
+        // transfer the CSDP token from user to the contract address
+        tradingToken.transferFrom(msg.sender, address(this), listingPrice);
         s_nftIds.increment();
         uint newNftId = s_nftIds.current();
 
@@ -176,8 +175,8 @@ contract NFTMarketplace is ReentrancyGuard {
             newNftId,
             _nftAddress,
             _tokenId,
-            payable(msg.sender),
-            payable(address(this)),
+            msg.sender,
+            address(this),
             _price,
             false
         );
@@ -194,25 +193,35 @@ contract NFTMarketplace is ReentrancyGuard {
             false
         );
 
-        payable(owner).transfer(msg.value);
+        // after listing of item transfer the listing price to owner of the marketplace
+        // payable(owner).transfer(msg.value); // for ether 
+        tradingToken.transfer(owner, listingPrice);  // for custom token
     }
 
     // Buy Item
     function buyItem(address _nftAddress, uint256 _itemId)
         external
-        payable
         nonReentrant
     {
         uint256 price = Items[_itemId].price;
         uint256 tokenId = Items[_itemId].tokenId;
-        address payable seller = Items[_itemId].seller;
-        if (msg.value != price) {
-            revert NFTMarketplace__ItemPriceNotMet();
+        address seller = Items[_itemId].seller;
+        // if (msg.value != price) {
+        //     revert NFTMarketplace__ItemPriceNotMet();
+        // }
+
+        // check if listingPrice is approved by the sender
+        if (tradingToken.allowance(msg.sender, address(this)) < price) {
+            revert NFTMarketplace__ListingPriceIsNotMet();
         }
 
-        seller.transfer(msg.value);
+        // transfer the CSDP token from user to the contract address
+        tradingToken.transferFrom(msg.sender, address(this), price);
+
+        // seller.transfer(msg.value);
         IERC721(_nftAddress).transferFrom(address(this), msg.sender, tokenId);
-        Items[_itemId].owner = payable(msg.sender);
+        tradingToken.transfer(seller, price);  // transfer CSDP to the seller of the item listed
+        Items[_itemId].owner = msg.sender;
         Items[_itemId].sold = true;
         s_nftSold.increment();
 
@@ -231,22 +240,31 @@ contract NFTMarketplace is ReentrancyGuard {
         address _nftAddress,
         uint256 _tokenId,
         uint256 _price
-    ) public payable nonReentrant {
+    ) public nonReentrant {
         if (Items[_tokenId].owner != msg.sender) {
             revert NFTMarketplace__YouAreNotOwnerOfThisItem();
         }
-        if (msg.value != listingPrice) {
+        // if (msg.value != listingPrice) {
+        //     revert NFTMarketplace__ListingPriceIsNotMet();
+        // }
+        
+        // check if listingPrice is approved by the sender
+        if (tradingToken.allowance(msg.sender, address(this)) < listingPrice) {
             revert NFTMarketplace__ListingPriceIsNotMet();
         }
+
+        // transfer the CSDP token from user to the contract address
+        tradingToken.transferFrom(msg.sender, address(this), listingPrice);
         Items[_tokenId].sold = false;
         Items[_tokenId].price = _price;
-        Items[_tokenId].seller = payable(msg.sender);
-        Items[_tokenId].owner = payable(address(this));
+        Items[_tokenId].seller = msg.sender;
+        Items[_tokenId].owner = address(this);
         s_nftSold.decrement();
 
         IERC721(_nftAddress).transferFrom(msg.sender, address(this), _tokenId);
 
         emit ItemResell(_nftAddress, _tokenId, msg.sender, address(this), _price, false);
-        payable(owner).transfer(msg.value);
+        // payable(owner).transfer(msg.value); for ether
+        tradingToken.transfer(owner, listingPrice);  // for custom token
     }
 }
