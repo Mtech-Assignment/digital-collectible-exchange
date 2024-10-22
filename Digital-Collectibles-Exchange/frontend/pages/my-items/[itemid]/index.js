@@ -70,6 +70,7 @@ export default function MyItemId() {
     const provider = new ethers.providers.Web3Provider(connection);
 
     const signer = provider.getSigner();
+    const nftContract = new ethers.Contract(nftAddress, NFTAbi.abi, signer);
     const nftMarketPlaceContract = new ethers.Contract(
       nftMarketplaceAddress,
       NFTMarketplaceAbi.abi,
@@ -92,6 +93,9 @@ export default function MyItemId() {
       listingPrice
     );
     await csdpApprovalTxn.wait();
+
+    const nftApprovalToMktPlaceContractTxn = await nftContract.approve(nftMarketplaceAddress, tokenId);
+    await nftApprovalToMktPlaceContractTxn.wait();
 
     const transaction = await nftMarketPlaceContract.resellItem(
       nftAddress,
@@ -124,7 +128,7 @@ export default function MyItemId() {
           <div>
             <Input
               id="resellprice"
-              placeholder="e.g.10 (In Ether)"
+              placeholder="e.g.10 (In CSDP)"
               label="Resell Price"
               onChange={(e) => setResellPrice(e.target.value)}
             />

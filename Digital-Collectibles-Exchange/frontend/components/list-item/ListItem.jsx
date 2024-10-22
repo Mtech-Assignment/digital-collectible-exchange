@@ -149,7 +149,7 @@ export default function ListItem() {
         />
         <Input
           id="price"
-          placeholder="e.g.10 (In Ether)"
+          placeholder="e.g.10 (In CSDP)"
           label="Price"
           onChange={(e) => {
             console.log(formData.price);
