@@ -15,7 +15,7 @@ export default function Card({ nft, url="/" }) {
           <h5 className="mb-3 text-2xl font-bold tracking-tight text-sky-600">
             {nft.name}
           </h5>
-        <p className="mb-3 h-4 font-normal text-gray-600">{nft.description}</p>
+        <p className="mb-3 h-4 font-normal text-gray-600">{nft.description.substring(0,30)+"..."}</p>
         <h5 className="mb-2 text-xl font-semibold tracking-tight text-sky-800">
           {nft.price.toString()} CSDP
         </h5>
