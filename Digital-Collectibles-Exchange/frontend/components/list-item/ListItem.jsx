@@ -118,6 +118,9 @@ export default function ListItem() {
 
     try {
       const uploadedJsonResponse = await pinata.upload.json({ name, description, price, image: file });
+      if (uploadedJsonResponse.isDuplicate) {
+        throw new error("Listing Duplicate NFT not allowed in marketplace");
+      }
       const url = `https://${pinataGateway}/ipfs/${uploadedJsonResponse.IpfsHash}`;
       createItem(url);
     } catch (error) {
@@ -125,6 +128,7 @@ export default function ListItem() {
         "Error in listAnItem function , You are in catch of listAnItem function ",
         error
       );
+      setisListing(false);
     }
   };
 

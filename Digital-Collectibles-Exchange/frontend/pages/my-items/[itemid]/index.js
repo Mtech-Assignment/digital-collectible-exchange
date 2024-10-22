@@ -21,11 +21,11 @@ export default function MyItemId() {
   const router = useRouter();
   let { itemid } = router.query;
 
-  const [loading, setLoading] = useState(false);
+  const [_, setLoading] = useState(false);
   const [nftData, setNftData] = useState();
   const [resellPrice, setResellPrice] = useState("");
   const [isReselling, setIsReselling] = useState(false);
-  const [isPurchasing, setisPurchasing] = useState(false);
+  const [isListing, setIsListing] = useState(false);
 
   const loadNFT = async () => {
     setLoading(true);
@@ -65,6 +65,7 @@ export default function MyItemId() {
   };
 
   const resellNFT = async (price, tokenId) => {
+    setIsListing(true);
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
@@ -104,6 +105,7 @@ export default function MyItemId() {
       // { value: listingPrice, }  // in case of sending ether
     );
     await transaction.wait();
+    setIsListing(false);
     await router.push("/my-listed-items");
   };
   
@@ -137,6 +139,7 @@ export default function MyItemId() {
               icon={<AiOutlineArrowUp className="text-2xl" />}
               className="text-lg w-full"
               onClick={() => resellNFT(resellPrice, nftData.tokenId)}
+              disabled={isListing}
             />
           </div>
         )}
