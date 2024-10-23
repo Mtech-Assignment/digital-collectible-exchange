@@ -21,7 +21,7 @@ export default function Navbar() {
   };
   return (
     <div>
-      <div className="flex flex-wrap sys-app-notCollapsed ">
+      <div className="sys-app-notCollapsed m-0 p-0 fixed top-0 left-0 w-full shadow z-50">
         <div className="w-full ">
           <div className="pb-0 py-2 px-2 mx-auto ">
             <div className="w-full flex justify-between items-center p-2 text-gray-900 bg-white rounded-lg shadow-lg font-medium capitalize">
