@@ -37,13 +37,14 @@ exports.createWallet = async (req, res) => {
 
 // Get wallet details based on JWT
 exports.getWallet = async (req, res) => {
+    const { userId } = req.params;
     try {
         const token = req.headers.authorization.split(' ')[1]; // Extract JWT from headers
         const decoded = jwt.verify(token, config.jwtSecret);
 
         // Fetch user and decrypt the mnemonic
         const user = await User.findById(decoded.id);
-        if (!user) {
+        if (!user || user.id !== userId) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 

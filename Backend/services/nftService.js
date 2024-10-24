@@ -3,6 +3,7 @@ const nftContractABI = require('../abi/NFT.json');
 const mktplaceContractABI = require('../abi/NFTMarketplace.json');
 const csdpTokenABI = require('../abi/CSDP.json');
 const { mapNftItemToObject } = require('../utils/nft');
+require('dotenv').config();
 
 // Connect to the blockchain (e.g., using Infura, Alchemy, or a local node)
 const provider = new ethers.JsonRpcProvider(process.env.rpcProviderUrl);
@@ -150,7 +151,7 @@ exports.buyNFT = async function(marketplaceItemId, buyerWallet) {
     }
 };
 
-exports.resellNFT = async function(nftId, resellPrice, resellerWallet) {
+exports.resellNFT = async function(itemId, resellPrice, resellerWallet) {
     try {
         const wallet = new ethers.Wallet(resellerWallet.privateKey, provider);
         const mktPlaceContractWithSigner = marketplaceContract.connect(wallet);
@@ -163,14 +164,16 @@ exports.resellNFT = async function(nftId, resellPrice, resellerWallet) {
         console.log("CSDP Token amount for relisting is approved for Marketplace");
         console.log();
 
-        const nftApprovalToMarketplace = await nftContractWithSigner.approve(process.env.nftMarketplaceAddress, nftId);
+        const marketplaceItem = await getParticularMarketplaceItem(itemId, wallet);
+
+        const nftApprovalToMarketplace = await nftContractWithSigner.approve(process.env.nftMarketplaceAddress, marketplaceItem.tokenId);
         await nftApprovalToMarketplace.wait();
         console.log("NFT Approval to marketplace for relisting done successfully");
         console.log();
 
         const resellItemTx = await mktPlaceContractWithSigner.resellItem(
             process.env.nftAddress,
-            nftId,
+            itemId,
             ethers.parseUnits(resellPrice.toString(), 18)
         );
         await resellItemTx.wait();

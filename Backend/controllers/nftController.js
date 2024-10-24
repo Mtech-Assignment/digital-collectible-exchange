@@ -34,13 +34,30 @@ exports.getUserOwnedNFTOnMarketplace = async (req, res) => {
     try {
         // Fetch user and decrypt the mnemonic
         const user = await User.findById(req.user.id);
-        if (!user) {
+        if (!user || user.id !== userId) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
         const wallet = await getUserWallet(user);
 
         const userOwnedNfts = await nftService.getUserOwnedNFTs(wallet);
         res.status(200).json({ success: true, userOwnedNfts });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+exports.getUserListedNFTOnMarketplace = async (req, res) => {
+    const { userId } = req.params;
+    try {
+        // Fetch user and decrypt the mnemonic
+        const user = await User.findById(req.user.id);
+        if (!user || userId !== user.id) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        const wallet = await getUserWallet(user);
+
+        const userListedNfts = await nftService.getUserListedNFTs(wallet);
+        res.status(200).json({ success: true, listed_nfts: userListedNfts });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -138,7 +155,7 @@ exports.buyNFT = async (req, res) => {
 
 // Sell an NFT
 exports.resellNFT = async (req, res) => {
-    const { nftId } = req.params;
+    const { itemId } = req.params;
 
     try {
         // Fetch user and decrypt the mnemonic
@@ -150,7 +167,7 @@ exports.resellNFT = async (req, res) => {
         console.log();
 
         const sellerWallet = await getUserWallet(user);
-        const tx = await nftService.resellNFT(nftId, req.body.resell_price, sellerWallet);
+        const tx = await nftService.resellNFT(itemId, req.body.resell_price, sellerWallet);
         res.status(201).json({ success: true, transaction: tx });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -158,10 +175,11 @@ exports.resellNFT = async (req, res) => {
 };
 
 exports.userTransactions = async (req, res) => {
+    const { userId } = req.params;
     try {
         // Fetch user and decrypt the mnemonic
         const user = await User.findById(req.user.id);
-        if (!user) {
+        if (!user || user.id !== userId) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
         console.log("Getting transactions for user "+ JSON.stringify(user));
