@@ -181,15 +181,13 @@ exports.resellNFT = async function(nftId, resellPrice, resellerWallet) {
     }
 };
 
-// exports.getUserListedNFTs = async function() {
-//     const balance = await nftContract.balanceOf(ownerAddress);
-//     const nfts = [];
+exports.getUserTransactions = async function(userAddress) {
+    const etherscanUrl = `https://api-holesky.etherscan.io/api?module=account&action=txlist&address=${userAddress}&apikey=${process.env.ETHERSCAN_API_KEY}`;
 
-//     for (let i = 0; i < balance.toNumber(); i++) {
-//         const nftId = await marketplaceContract.tokenOfOwnerByIndex(ownerAddress, i);
-//         const tokenURI = await marketplaceContract.tokenURI(nftId);
-//         nfts.push({ id: nftId.toString(), tokenURI });
-//     }
-
-//     return nfts;
-// };
+    try {
+        const txns = await fetch(etherscanUrl);
+        return await txns.json();
+    } catch (error) {
+        throw new Error(error);
+    }
+};

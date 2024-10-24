@@ -33,6 +33,8 @@ router.get('/user/nft', authenticateJWT, nftController.getUserOwnedNFTOnMarketpl
 
 router.get('/user/nft', authenticateJWT, nftController.getUserOwnedNFTOnMarketplace);
 
+router.get('/user/transaction', authenticateJWT, nftController.userTransactions);
+
 // // Get owned NFTs for a user
 // router.get('/users/:userId/nfts/owned', authenticateJWT, nftController.getOwnedNFTs);
 
