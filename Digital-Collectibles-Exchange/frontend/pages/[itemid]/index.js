@@ -32,7 +32,6 @@ export default function Itemid() {
     const data = await nftMarketPlaceContract.getParticularItem(
       router.query.itemid
     );
-    console.log(data);
 
     const allData = async () => {
       let convertedPrice = ethers.utils.formatUnits(

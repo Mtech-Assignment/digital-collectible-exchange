@@ -50,14 +50,14 @@ export default function MyItemId() {
       const metaData = await axios.get(tokenUri);
       let item = {
         price: convertedPrice,
-        tokenId: data.tokenId.toNumber(),
+        tokenId: data.itemId.toNumber(),
         seller: data.seller,
         owner: data.owner,
         image: metaData.data.image,
         name: metaData.data.name,
         description: metaData.data.description,
       };
-      console.log(item);
+      console.log("item ", item);
       setNftData(item);
     };
     allData();

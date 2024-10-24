@@ -25,7 +25,6 @@ export default function AllNFTs() {
       NFTMarketplaceAbi.abi,
       provider
     );
-    console.log(nftContract);
     const data = await nftMarketPlaceContract.getAllListedItems();
 
     const allItems = await Promise.all(
@@ -38,7 +37,7 @@ export default function AllNFTs() {
         const metaData = await axios.get(tokenUri);
         let item = {
           price: convertedPrice,
-          tokenId: i.tokenId.toNumber(),
+          tokenId: i.itemId.toNumber(),
           seller: i.seller,
           owner: i.owner,
           image: metaData.data.image,
