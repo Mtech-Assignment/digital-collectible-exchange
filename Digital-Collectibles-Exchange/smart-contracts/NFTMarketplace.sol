@@ -5,7 +5,6 @@ pragma solidity ^0.8.7;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /* Errors */
@@ -238,10 +237,10 @@ contract NFTMarketplace is ReentrancyGuard {
     // Resell
     function resellItem(
         address _nftAddress,
-        uint256 _tokenId,
+        uint256 _itemId,
         uint256 _price
     ) public nonReentrant {
-        if (Items[_tokenId].owner != msg.sender) {
+        if (Items[_itemId].owner != msg.sender) {
             revert NFTMarketplace__YouAreNotOwnerOfThisItem();
         }
         // if (msg.value != listingPrice) {
@@ -255,12 +254,13 @@ contract NFTMarketplace is ReentrancyGuard {
 
         // transfer the CSDP token from user to the contract address
         tradingToken.transferFrom(msg.sender, address(this), listingPrice);
-        Items[_tokenId].sold = false;
-        Items[_tokenId].price = _price;
-        Items[_tokenId].seller = msg.sender;
-        Items[_tokenId].owner = address(this);
+        Items[_itemId].sold = false;
+        Items[_itemId].price = _price;
+        Items[_itemId].seller = msg.sender;
+        Items[_itemId].owner = address(this);
         s_nftSold.decrement();
 
+        uint _tokenId = Items[_itemId].tokenId;
         IERC721(_nftAddress).transferFrom(msg.sender, address(this), _tokenId);
 
         emit ItemResell(_nftAddress, _tokenId, msg.sender, address(this), _price, false);
