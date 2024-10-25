@@ -11,15 +11,19 @@ const upload = multer({ dest: 'uploads/' }); // Initialize multer with the stora
 router.post('/mint', authenticateJWT, upload.single('file'), nftController.mintNFT);
 
 // List an NFT on marketplace
-router.post('/:nftId/list', authenticateJWT, nftController.listNFTOnMarketplace);
+router.post('/:nftId/listing', authenticateJWT, nftController.listNFTOnMarketplace);
 
-// Buy an NFT
-router.post('/:itemId/buy', authenticateJWT, nftController.buyNFT);
+// Buy an NFT (Just changing the ownership)
+router.put('/:itemId/buy', authenticateJWT, nftController.buyNFT);
 
 // List an NFT on marketplace for sell
-router.post('/:itemId/resell', authenticateJWT, nftController.resellNFT);
+router.put('/:itemId/resell', authenticateJWT, nftController.resellNFT);
 
 // Get all the listed nfts on marketplace
-router.get('/listed', nftController.getListedNFTOnMarketplace);
+router.get('/listings', nftController.getListedNFTOnMarketplace);
+
+router.get('/:nftId',  nftController.getNftDetail);
+
+router.delete('/:itemId', authenticateJWT, nftController.burnNFT);
 
 module.exports = router;

@@ -131,6 +131,16 @@ exports.listNFTOnMarketplace = async (req, res) => {
     }
 }
 
+exports.getNftDetail = async (req, res) => {
+    const { nftId } = req.params;
+    try {
+        const getSpecificNftDetailsTxn = await nftService.getNftDetail(nftId);
+        res.status(201).json({ success: true, result: getSpecificNftDetailsTxn });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
+
 // Buy an NFT
 exports.buyNFT = async (req, res) => {
     const { itemId } = req.params;
@@ -191,4 +201,32 @@ exports.userTransactions = async (req, res) => {
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
+}
+
+exports.burnNFT = async (req, res) => {
+    const { itemId } = req.params;
+    try {
+        // Fetch user and decrypt the mnemonic
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const userWallet = await getUserWallet(user);
+        const nft = await nftService.getParticularMarketplaceItem(itemId);
+        // await nftService.burnNFT(userWallet, nft.tokenId);
+        console.log(`Burned NFT with tokenId ${nft.tokenId} of user  ${JSON.stringify(user)}`);
+        console.log();
+
+        await nftService.removeItemFromMarketplace(userWallet, itemId)
+        console.log("Removed NFT from Marketplace "+ JSON.stringify(user));
+        console.log();
+
+        res.status(201).json({ success: true, transactions: {
+            item_removed: itemId,
+            nft_burned: nft.tokenId
+        } });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    } 
 }
