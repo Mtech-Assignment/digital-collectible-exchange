@@ -8,10 +8,10 @@ import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 /* Errors */
-error NFTMarketplace__ItemPriceIsZero();
-error NFTMarketplace__ItemPriceNotMet();
-error NFTMarketplace__ListingPriceIsNotMet();
-error NFTMarketplace__YouAreNotOwnerOfThisItem();
+error NFTMarketplace__ItemPriceIsZero(string message);
+error NFTMarketplace__ItemPriceNotMet(string message);
+error NFTMarketplace__ListingPriceIsNotMet(string message);
+error NFTMarketplace__YouAreNotOwnerOfThisItem(string message);
 
 contract NFTMarketplace is ReentrancyGuard {
 
@@ -152,7 +152,7 @@ contract NFTMarketplace is ReentrancyGuard {
         uint256 _price
     ) public nonReentrant {
         if (_price == 0) { // price in wei
-            revert NFTMarketplace__ItemPriceIsZero();
+            revert NFTMarketplace__ItemPriceIsZero("Item Price is zero");
         }
 
         // in case of using ether as the marketplace trading
@@ -162,7 +162,7 @@ contract NFTMarketplace is ReentrancyGuard {
 
         // check if listingPrice is approved by the sender
         if (tradingToken.allowance(msg.sender, address(this)) < listingPrice) {
-            revert NFTMarketplace__ListingPriceIsNotMet();
+            revert NFTMarketplace__ListingPriceIsNotMet("Listing price is not met");
         }
 
         // transfer the CSDP token from user to the contract address
@@ -211,7 +211,7 @@ contract NFTMarketplace is ReentrancyGuard {
 
         // check if listingPrice is approved by the sender
         if (tradingToken.allowance(msg.sender, address(this)) < price) {
-            revert NFTMarketplace__ListingPriceIsNotMet();
+            revert NFTMarketplace__ListingPriceIsNotMet("Listing Price is not met");
         }
 
         // transfer the CSDP token from user to the contract address
@@ -241,7 +241,7 @@ contract NFTMarketplace is ReentrancyGuard {
         uint256 _price
     ) public nonReentrant {
         if (Items[_itemId].owner != msg.sender) {
-            revert NFTMarketplace__YouAreNotOwnerOfThisItem();
+            revert NFTMarketplace__YouAreNotOwnerOfThisItem("You are not the owner of this item");
         }
         // if (msg.value != listingPrice) {
         //     revert NFTMarketplace__ListingPriceIsNotMet();
@@ -249,7 +249,7 @@ contract NFTMarketplace is ReentrancyGuard {
         
         // check if listingPrice is approved by the sender
         if (tradingToken.allowance(msg.sender, address(this)) < listingPrice) {
-            revert NFTMarketplace__ListingPriceIsNotMet();
+            revert NFTMarketplace__ListingPriceIsNotMet("Listing price is not met");
         }
 
         // transfer the CSDP token from user to the contract address
@@ -269,8 +269,8 @@ contract NFTMarketplace is ReentrancyGuard {
     }
 
     function unlistItem(uint256 _itemId) external {
-        if (Items[_itemId].seller != msg.sender) {
-            revert NFTMarketplace__YouAreNotOwnerOfThisItem();
+        if (Items[_itemId].seller != msg.sender || Items[_itemId].owner != msg.sender) {
+            revert NFTMarketplace__YouAreNotOwnerOfThisItem("You are not the owner of this item");
         }
         delete Items[_itemId];
     }
