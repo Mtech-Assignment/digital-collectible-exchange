@@ -267,4 +267,11 @@ contract NFTMarketplace is ReentrancyGuard {
         // payable(owner).transfer(msg.value); for ether
         tradingToken.transfer(owner, listingPrice);  // for custom token
     }
+
+    function unlistItem(uint256 _itemId) external {
+        if (Items[_itemId].seller != msg.sender) {
+            revert NFTMarketplace__YouAreNotOwnerOfThisItem();
+        }
+        delete Items[_itemId];
+    }
 }
