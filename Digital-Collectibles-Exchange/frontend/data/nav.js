@@ -2,6 +2,7 @@ import {TbLayoutDashboard} from 'react-icons/tb'
 import {HiTemplate} from 'react-icons/hi'
 import {GiSellCard} from 'react-icons/gi'
 import {AiFillCrown} from 'react-icons/ai'
+import { MdGeneratingTokens } from "react-icons/md";
 
 export const navLinks = [
     {
@@ -24,4 +25,9 @@ export const navLinks = [
         link: "/my-listed-items",
         icon: <GiSellCard />
     },
+    {
+        title: "Buy Token ",
+        link: "/buy-token",
+        icon: <MdGeneratingTokens />
+    }
 ]
