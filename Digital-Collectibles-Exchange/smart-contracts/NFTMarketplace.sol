@@ -269,7 +269,7 @@ contract NFTMarketplace is ReentrancyGuard {
     }
 
     function unlistItem(uint256 _itemId) external {
-        if (Items[_itemId].seller != msg.sender || Items[_itemId].owner != msg.sender) {
+        if (Items[_itemId].seller != msg.sender && Items[_itemId].owner != msg.sender) {
             revert NFTMarketplace__YouAreNotOwnerOfThisItem("You are not the owner of this item");
         }
         delete Items[_itemId];
