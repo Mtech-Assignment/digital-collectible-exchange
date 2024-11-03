@@ -31,7 +31,7 @@ export default function CSDPToken() {
       CSDPAbi.abi,
       provider
     );
-    const currentBalance = await CSDPTokenContract.balanceOf(address);
+    let currentBalance = await CSDPTokenContract.balanceOf(address);
     currentBalance = currentBalance / (10 ** 18);
     console.log(currentBalance);
     setCurrentBalance(currentBalance);
