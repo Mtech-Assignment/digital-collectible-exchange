@@ -9,12 +9,13 @@ import { useRouter } from "next/router";
 import BtnMain from "../../subcomponents/btns/BtnMain";
 import { AiOutlineArrowUp, } from "react-icons/ai";
 import Input from "./Input";
+import Loading from "../../subcomponents/loading/Loading";
 
 
 export default function CSDPToken() {
   const router = useRouter();
 
-  const [_, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [currentBalance, setCurrentBalance] = useState(0.0);
   const [csdpTokenAmount, setCsdpTokenAmount] = useState(0);
   const [priceInEther, setPriceInEther] = useState(0);
@@ -40,6 +41,7 @@ export default function CSDPToken() {
 
   const buyCSDP = async () => {
     setisPurchasing(true);
+    setLoading(true);
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
     const provider = new ethers.providers.Web3Provider(connection);
@@ -62,6 +64,7 @@ export default function CSDPToken() {
       { value: etherPriceInUint }   // sending ether to contract to get a token
     );
     await transaction.wait();
+    setLoading(false);
     setisPurchasing(false);
   };
 
@@ -70,10 +73,29 @@ export default function CSDPToken() {
   }, []);
 
   return (
-    <div>
-      <h1>Buy CSDP using Ether</h1>
-      <h3>Current balance: {currentBalance} CSDP</h3>
-      <div>
+    <div style={
+      {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center"
+      }
+    }>
+      <h1 style={{fontSize: 40, marginTop: 20, textAlign: "center"}}>Buy CSDP using Ether</h1>
+      <h3 style={{fontSize: 30, marginTop: 10, textAlign: "center"}}>Current balance: {currentBalance} CSDP</h3>
+      {loading == true ? (
+        <Loading />
+      ) : (
+      <div style={
+        {
+          marginTop: 50,
+          fontSize: 20, 
+          display: "flex", 
+          flexDirection: "column", 
+          justifyContent: "center",
+          alignItems: "center", 
+          maxWidth: 610
+      }}>
         <Input
           id="csdp-amount"
           placeholder="input upto 15 decimal places"
@@ -100,7 +122,7 @@ export default function CSDPToken() {
           className="text-lg w-full"
           onClick={() => buyCSDP()}
         />}
-      </div>
+      </div>)}
     </div>
   );
 }
