@@ -124,12 +124,20 @@ exports.buyNFT = async function(marketplaceItemId, buyerWallet) {
     const contractWithSigner = marketplaceContract.connect(wallet);
     const marketplaceItem = await marketplaceContract.getParticularItem(marketplaceItemId);;
     
-    await approveToken(marketplaceItem.price, wallet);
+    try {
+        await approveToken(marketplaceItem.price, wallet);
+    } catch(error) {
+        return { nft_bought: false, error };
+    }
     console.log("Token CSDP Approved for buying NFT with price "+marketplaceItem.price+" CSDP");
     console.log();
 
-    const tx = await contractWithSigner.buyItem(process.env.nftAddress, marketplaceItemId);
-    await tx.wait(); // Wait for the transaction to be mined
+    try {
+        const tx = await contractWithSigner.buyItem(process.env.nftAddress, marketplaceItemId);
+        await tx.wait(); // Wait for the transaction to be mined
+    } catch(error) {
+        return { nft_bought: false, error };
+    }
     return { nft_bought: true };
 };
 
@@ -141,23 +149,27 @@ exports.resellNFT = async function(itemId, resellPrice, resellerWallet) {
     console.log("Marketplace Listing price of NFT is : " + mktplaceListingPrice);
     console.log();
 
-    await approveToken(mktplaceListingPrice, wallet);
-    console.log("CSDP Token amount for relisting is approved for Marketplace");
-    console.log();
+    try {
+        await approveToken(mktplaceListingPrice, wallet);
+        console.log("CSDP Token amount for relisting is approved for Marketplace");
+        console.log();
 
-    const marketplaceItem = await exports.getParticularMarketplaceItem(itemId);
+        const marketplaceItem = await exports.getParticularMarketplaceItem(itemId);
 
-    const nftApprovalToMarketplace = await nftContractWithSigner.approve(process.env.nftMarketplaceAddress, marketplaceItem.tokenId);
-    await nftApprovalToMarketplace.wait();
-    console.log("NFT Approval to marketplace for relisting done successfully");
-    console.log();
+        const nftApprovalToMarketplace = await nftContractWithSigner.approve(process.env.nftMarketplaceAddress, marketplaceItem.tokenId);
+        await nftApprovalToMarketplace.wait();
+        console.log("NFT Approval to marketplace for relisting done successfully");
+        console.log();
 
-    const resellItemTx = await mktPlaceContractWithSigner.resellItem(
-        process.env.nftAddress,
-        itemId,
-        ethers.parseUnits(resellPrice.toString(), 18)
-    );
-    await resellItemTx.wait();
+        const resellItemTx = await mktPlaceContractWithSigner.resellItem(
+            process.env.nftAddress,
+            itemId,
+            ethers.parseUnits(resellPrice.toString(), 18)
+        );
+        await resellItemTx.wait();
+    } catch(error) {
+        return { item_listed: false, error };
+    }
 
     return { item_listed: true };
 };
@@ -170,14 +182,22 @@ exports.getUserTransactions = async function(userAddress) {
 };
 
 exports.removeItemFromMarketplace = async function(userWallet, itemId) {
-    const wallet = new ethers.Wallet(userWallet.privateKey, provider);
-    const mktPlaceContractWithSigner = marketplaceContract.connect(wallet);
-    const marketplaceItemDeletionTxn = await mktPlaceContractWithSigner.unlistItem(itemId); 
-    await marketplaceItemDeletionTxn.wait();
+    try {
+        const wallet = new ethers.Wallet(userWallet.privateKey, provider);
+        const mktPlaceContractWithSigner = marketplaceContract.connect(wallet);
+        const marketplaceItemDeletionTxn = await mktPlaceContractWithSigner.unlistItem(itemId); 
+        await marketplaceItemDeletionTxn.wait();
+    } catch(error) {
+        return { error };
+    }
 }
 
 exports.burnNFT = async function(userWallet, nftId) {
-    const wallet = new ethers.Wallet(userWallet.privateKey, provider);
-    const nftContractWithSigner = nftContract.connect(wallet);
-    await nftContractWithSigner.burn(nftId);
+    try {
+        const wallet = new ethers.Wallet(userWallet.privateKey, provider);
+        const nftContractWithSigner = nftContract.connect(wallet);
+        await nftContractWithSigner.burn(nftId);
+    } catch(error) {
+        return { error };
+    }
 }

@@ -106,7 +106,7 @@ exports.mintNFT = async (req, res) => {
 
         const nftTx = await nftService.mintNFT(tokenURI, wallet);
 
-        // fs.unlinkSync(req.file.path);  // delete the file as it's processed
+        fs.unlinkSync(req.file.path);  // delete the file as it's processed
         res.status(201).json({ success: true, transaction: nftTx });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -125,6 +125,9 @@ exports.listNFTOnMarketplace = async (req, res) => {
 
         const userWallet = await getUserWallet(user);
         const listNFTTxRes = await nftService.listNFT(req.params.nftId, req.body.listingPrice, userWallet);
+        if (!listNFTTxRes.nft_listed) {
+            return res.status(400).json({ success: false, message: listNFTTxRes.message });
+        }
         res.status(201).json({ success: true, transaction: listNFTTxRes });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -157,6 +160,10 @@ exports.buyNFT = async (req, res) => {
         const wallet = await getUserWallet(user);
 
         const tx = await nftService.buyNFT(itemId, wallet);
+        if (!tx.nft_bought) {
+            return res.status(400).json({ success: false, message: tx.error.message });
+        }
+
         res.status(200).json({ success: true, transaction: tx });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -178,6 +185,9 @@ exports.resellNFT = async (req, res) => {
 
         const sellerWallet = await getUserWallet(user);
         const tx = await nftService.resellNFT(itemId, req.body.resell_price, sellerWallet);
+        if (!tx.item_listed) {
+            return res.status(400).json({ success: false, message: error.message });
+        }
         res.status(201).json({ success: true, transaction: tx });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -214,11 +224,17 @@ exports.burnNFT = async (req, res) => {
 
         const userWallet = await getUserWallet(user);
         const nft = await nftService.getParticularMarketplaceItem(itemId);
-        // await nftService.burnNFT(userWallet, nft.tokenId);
+        const burnNftTx = await nftService.burnNFT(userWallet, nft.tokenId);
+        if (burnNftTx && burnNftTx.error) {
+            return res.status(400).json({ success: false, message: burnNftTx.error.message });
+        }
         console.log(`Burned NFT with tokenId ${nft.tokenId} of user  ${JSON.stringify(user)}`);
         console.log();
 
-        await nftService.removeItemFromMarketplace(userWallet, itemId)
+        const removeItemTx = await nftService.removeItemFromMarketplace(userWallet, itemId);
+        if (removeItemTx && removeItemTx.error) {
+            return res.status(400).json({ success: false, message: removeItemTx.error.message });
+        }
         console.log("Removed NFT from Marketplace "+ JSON.stringify(user));
         console.log();
 
