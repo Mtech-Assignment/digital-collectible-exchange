@@ -98,7 +98,7 @@ exports.mintNFT = async (req, res) => {
         if (!name || !price || !description || !fileUploadUrl) {
             console.log("Some field are missing");
             console.log();
-            return res.status(404).json({ success: false, message: `Some field of NFT not found` });;
+            return res.status(400).json({ success: false, message: `Some field of NFT not found` });;
         }
 
         const uploadedJsonResponse = await pinata.upload.json({ name, description, price, image: fileUploadUrl });
@@ -223,13 +223,6 @@ exports.burnNFT = async (req, res) => {
         }
 
         const userWallet = await getUserWallet(user);
-        const nft = await nftService.getParticularMarketplaceItem(itemId);
-        const burnNftTx = await nftService.burnNFT(userWallet, nft.tokenId);
-        if (burnNftTx && burnNftTx.error) {
-            return res.status(400).json({ success: false, message: burnNftTx.error.message });
-        }
-        console.log(`Burned NFT with tokenId ${nft.tokenId} of user  ${JSON.stringify(user)}`);
-        console.log();
 
         const removeItemTx = await nftService.removeItemFromMarketplace(userWallet, itemId);
         if (removeItemTx && removeItemTx.error) {
@@ -239,8 +232,7 @@ exports.burnNFT = async (req, res) => {
         console.log();
 
         res.status(201).json({ success: true, transactions: {
-            item_removed: itemId,
-            nft_burned: nft.tokenId
+            item_removed: itemId
         } });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });

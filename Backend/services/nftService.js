@@ -51,6 +51,7 @@ exports.getUserListedNFTs = async (userWallet) => {
 exports.getAllListedNFTs = async function() {
     let allListedNftOnMarketplace = await marketplaceContract.getAllListedItems();
     allListedNftOnMarketplace = mapNftItemToObject(allListedNftOnMarketplace);
+    allListedNftOnMarketplace = allListedNftOnMarketplace.filter(nft => Number(nft.owner) !== 0);
     console.log("Listed NFT on marketplace : ", allListedNftOnMarketplace);
     console.log();
     return { listed_nft_items: allListedNftOnMarketplace };
@@ -187,16 +188,6 @@ exports.removeItemFromMarketplace = async function(userWallet, itemId) {
         const mktPlaceContractWithSigner = marketplaceContract.connect(wallet);
         const marketplaceItemDeletionTxn = await mktPlaceContractWithSigner.unlistItem(itemId); 
         await marketplaceItemDeletionTxn.wait();
-    } catch(error) {
-        return { error };
-    }
-}
-
-exports.burnNFT = async function(userWallet, nftId) {
-    try {
-        const wallet = new ethers.Wallet(userWallet.privateKey, provider);
-        const nftContractWithSigner = nftContract.connect(wallet);
-        await nftContractWithSigner.burn(nftId);
     } catch(error) {
         return { error };
     }

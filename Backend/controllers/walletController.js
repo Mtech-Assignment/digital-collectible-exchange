@@ -22,7 +22,7 @@ exports.createWallet = async (req, res) => {
         const csdpBalance = await walletService.getTokenBalance(wallet.address, process.env.csdpAddress); // Replace with actual token address
 
         // Return the wallet details without sensitive data
-        return res.status(201).json({
+        return res.status(200).json({
             success: true,
             wallet: {
                 address: wallet.address,
