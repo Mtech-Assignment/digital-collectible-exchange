@@ -22,7 +22,6 @@ export default function NftInfo({ nftData, children }) {
                 {nftData?.price.toString()} CSDP
               </p>
             </div>
-
             <div>{children}</div>
           </div>
         </div>

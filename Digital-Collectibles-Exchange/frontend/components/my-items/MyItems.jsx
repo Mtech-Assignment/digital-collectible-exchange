@@ -32,6 +32,7 @@ export default function MyItems() {
       );
 
       const data = await nftMarketPlaceContract.getOwnerListedItems();
+      console.log(data);
 
       const allItems = await Promise.all(
           data?.map(async (i) => {
@@ -39,6 +40,7 @@ export default function MyItems() {
             const tokenUri = await nftContract.tokenURI(i.tokenId);
             const metaData = await axios.get(tokenUri);
             return {
+              itemId: i.itemId.toNumber(),
               price: convertedPrice,
               tokenId: i.tokenId.toNumber(),
               seller: i.seller,

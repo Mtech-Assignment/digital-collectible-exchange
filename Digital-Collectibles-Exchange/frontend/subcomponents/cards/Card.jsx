@@ -24,8 +24,8 @@ export default function Card({ nft, url="/" }) {
             icon={<AiOutlineArrowRight className="text-2xl" />}
             className="w-full"
             onClick={() => {
-              router.push(`${url}${nft.tokenId}`);
-              console.log(`${url}${nft.tokenId}`);
+              router.push(`${url}${nft.itemId}`);
+              console.log(`${url}${nft.itemId}`);
             }} />
       </div>
     </div>
