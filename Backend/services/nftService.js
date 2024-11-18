@@ -94,7 +94,11 @@ exports.listNFT = async function(nftId, listingPrice, listerWallet) {
     console.log("Marketplace Listing price of NFT is : " + mktplaceListingPrice);
     console.log();
 
-    await approveToken(mktplaceListingPrice, wallet);
+    try {
+        await approveToken(mktplaceListingPrice, wallet);
+    } catch(error) {
+        return { nft_bought: false, error };
+    }
 
     const eventPromise = new Promise((resolve, _) => {
         marketplaceContract.once('ItemList', (mktPlaceItemId) => {
@@ -102,12 +106,16 @@ exports.listNFT = async function(nftId, listingPrice, listerWallet) {
         });
     });
 
-    const listNFTTx = await contractWithSigner.listItem(
-        process.env.nftAddress,
-        nftId,
-        ethers.parseUnits(listingPrice.toString(), 18)
-    );
-    await listNFTTx.wait();
+    try {
+        const listNFTTx = await contractWithSigner.listItem(
+            process.env.nftAddress,
+            nftId,
+            ethers.parseUnits(listingPrice.toString(), 18)
+        );
+        await listNFTTx.wait();
+    } catch(error) {
+        return { nft_bought: false, error };
+    }
 
     let marketplaceItemId = Number(await eventPromise);
     return { nft_listed: true, listed_itemid: marketplaceItemId };

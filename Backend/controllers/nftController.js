@@ -3,6 +3,7 @@ const nftService = require('../services/nftService');
 const walletService = require('../services/walletService');
 const { decryptMnemonic } = require('../utils/encrypt');
 const User = require('../models/User');
+const AsyncJobStatus = require('../models/AsyncJobStatus');
 const fs = require('fs');
 const { Blob } = require("buffer");
 require('dotenv').config();
@@ -134,6 +135,87 @@ exports.listNFTOnMarketplace = async (req, res) => {
     }
 }
 
+exports.listNftOnMarketplaceJob = async (req, res) => {
+    try {
+        // Fetch user and decrypt the mnemonic
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        console.log("Listing NFT from user: "+ JSON.stringify(user));
+        console.log();
+
+        const userWallet = await getUserWallet(user);
+        const listingTransactionInitiationMessage = 'Item listing on marketplace transaction started successfully.';
+        const asyncListJob = new AsyncJobStatus({ user: user.username, status: 'PENDING', message: listingTransactionInitiationMessage });
+        await asyncListJob.save();
+
+        nftService.listNFT(req.params.nftId, req.body.listingPrice, userWallet)
+        .then(async (listNFTTxRes) => {
+            if (!listNFTTxRes.nft_listed) {
+                await AsyncJobStatus.findByIdAndUpdate(
+                    asyncListJob._id,
+                    { status: 'FAILED', message: listNFTTxRes.error }
+                );
+            }
+            else {
+                await AsyncJobStatus.findByIdAndUpdate(
+                    asyncListJob._id,
+                    { status: 'DONE', message: `Item Listed successfully with id as ${listNFTTxRes.listed_itemid}.` }
+                );
+            }
+        })
+        .catch(async (err) => {
+            await AsyncJobStatus.findByIdAndUpdate(
+                asyncListJob._id,
+                { status: 'FAILED', message: err }
+            );
+        });
+        
+        return res.status(202).json({ success: true, result: {
+            id: asyncListJob._id,
+            status: 'PENDING',
+            message: listingTransactionInitiationMessage
+        } });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+exports.getAsyncJobStatus = async (req, res) => {
+    const { jobId } = req.params;
+    try {
+        // Fetch user and decrypt the mnemonic
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+
+        const jobStatus = await AsyncJobStatus.findById(
+            jobId
+        );
+
+        if (jobStatus.user !== user.username) {
+            return res.status(404).json({
+                success: false, 
+                message: `JobId ${jobId} not found for user ${user.username}.`
+            }); 
+        }
+        
+        return res.status(200).json({
+            success: true, 
+            result: {
+                id: jobStatus._id,
+                status: jobStatus.status,
+                message: jobStatus.message
+            }
+        })
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+}
+
+
 exports.getNftDetail = async (req, res) => {
     const { nftId } = req.params;
     try {
@@ -170,6 +252,55 @@ exports.buyNFT = async (req, res) => {
     }
 };
 
+// Buy an NFT (Async)
+exports.buyNFTJob = async (req, res) => {
+    const { itemId } = req.params;
+
+    try {
+        // Fetch user and decrypt the mnemonic
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        console.log("Buying NFT from user: "+ JSON.stringify(user));
+        console.log();
+
+        const wallet = await getUserWallet(user);
+        const buyingTransactionInitiationMessage = 'Item Buying from marketplace transaction started successfully.';
+        const asyncListJob = new AsyncJobStatus({ user: user.username, status: 'PENDING', message: buyingTransactionInitiationMessage });
+        await asyncListJob.save();
+
+        nftService.buyNFT(itemId, wallet)
+        .then(async (tx) => {
+            if (!tx.nft_bought) {
+                await AsyncJobStatus.findByIdAndUpdate(
+                    asyncListJob._id,
+                    { status: 'FAILED', message: tx.error }
+                );
+            } else {
+                await AsyncJobStatus.findByIdAndUpdate(
+                    asyncListJob._id,
+                    { status: 'DONE', message: `Item Bought successfully.` }
+                );
+            }
+        })
+        .catch(async (err) => {
+            await AsyncJobStatus.findByIdAndUpdate(
+                asyncListJob._id,
+                { status: 'FAILED', message: err }
+            );
+        });
+        
+        return res.status(202).json({ success: true, result: {
+            id: asyncListJob._id,
+            status: 'PENDING',
+            message: buyingTransactionInitiationMessage
+        }});
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 // Sell an NFT
 exports.resellNFT = async (req, res) => {
     const { itemId } = req.params;
@@ -194,6 +325,55 @@ exports.resellNFT = async (req, res) => {
     }
 };
 
+// Sell an NFT (Async)
+exports.resellNFTJob = async (req, res) => {
+    const { itemId } = req.params;
+
+    try {
+        // Fetch user and decrypt the mnemonic
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        console.log("ReListing NFT from user: "+ JSON.stringify(user));
+        console.log();
+
+        const sellerWallet = await getUserWallet(user);
+        const relistingTransactionInitiationMessage = 'Item Relisting on marketplace transaction started successfully.';
+        const asyncListJob = new AsyncJobStatus({ user: user.username, status: 'PENDING', message: relistingTransactionInitiationMessage });
+        await asyncListJob.save();
+
+        nftService.resellNFT(itemId, req.body.resell_price, sellerWallet)
+        .then(async (tx) => {
+            if (!tx.item_listed) {
+                await AsyncJobStatus.findByIdAndUpdate(
+                    asyncListJob._id,
+                    { status: 'FAILED', message: listNFTTxRes.error }
+                );    
+            } else {
+                await AsyncJobStatus.findByIdAndUpdate(
+                    asyncListJob._id,
+                    { status: 'DONE', message: `Item ReListed successfully.` }
+                );
+            }
+        })
+        .catch(async (err) => {
+            await AsyncJobStatus.findByIdAndUpdate(
+                asyncListJob._id,
+                { status: 'FAILED', message: err }
+            );
+        });
+        
+        return res.status(202).json({ success: true, result: {
+            id: asyncListJob._id,
+            status: 'PENDING',
+            message: relistingTransactionInitiationMessage
+        } });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 exports.userTransactions = async (req, res) => {
     const { userId } = req.params;
     try {
@@ -207,7 +387,7 @@ exports.userTransactions = async (req, res) => {
 
         const userWallet = await getUserWallet(user);
         const userTxns = await nftService.getUserTransactions(userWallet.address);
-        res.status(201).json({ success: true, transactions: userTxns.result });
+        res.status(200).json({ success: true, transactions: userTxns.result });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
     }
@@ -231,7 +411,7 @@ exports.burnNFT = async (req, res) => {
         console.log("Removed NFT from Marketplace "+ JSON.stringify(user));
         console.log();
 
-        res.status(201).json({ success: true, transactions: {
+        res.status(200).json({ success: true, transactions: {
             item_removed: itemId
         } });
     } catch (error) {
