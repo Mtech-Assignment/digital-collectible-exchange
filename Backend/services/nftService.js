@@ -79,9 +79,13 @@ exports.mintNFT = async function(tokenURI, userWallet) {
         });
     });
     
-    // Call the mint function without specifying the user address
-    const tx = await contractWithSigner.mintToken(tokenURI);
-    await tx.wait(); // Wait for the transaction to be mined
+    try {
+        // Call the mint function without specifying the user address
+        const tx = await contractWithSigner.mintToken(tokenURI);
+        await tx.wait(); // Wait for the transaction to be mined
+    } catch(error) {
+        return { nft_minted: false, error };
+    }
     
     tokenId = Number(await eventPromise);
     return { nft_minted: true, tokenid: tokenId };

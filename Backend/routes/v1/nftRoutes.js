@@ -10,6 +10,11 @@ const upload = multer({ dest: 'uploads/' }); // Initialize multer with the stora
 // Mint an NFT
 router.post('/mint', authenticateJWT, upload.single('file'), nftController.mintNFT);
 
+// Mint an NFT (Async)
+router.post('/mint/jobs', authenticateJWT, upload.single('file'), nftController.mintNFTJob);
+
+router.get('/mint/jobs/:jobId', authenticateJWT, nftController.getAsyncJobStatus);
+
 // List an NFT on marketplace
 router.post('/:nftId/listing', authenticateJWT, nftController.listNFTOnMarketplace);
 

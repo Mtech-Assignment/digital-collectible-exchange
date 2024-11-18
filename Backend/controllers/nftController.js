@@ -114,6 +114,84 @@ exports.mintNFT = async (req, res) => {
     }
 };
 
+// Mint an NFT
+exports.mintNFTJob = async (req, res) => {
+    // Check if a file was uploaded
+    if (!req.file) {
+        return res.status(400).send('No file uploaded.');
+    }
+    
+    const pinata = new PinataSDK({
+        pinataJwt: process.env.PINATA_JWT
+    });
+    const pinataGateway = process.env.PINATA_GATEWAY;
+
+    try {
+        // Fetch user and decrypt the mnemonic
+        const user = await User.findById(req.user.id);
+        if (!user) {
+            return res.status(404).json({ success: false, message: 'User not found' });
+        }
+        console.log("Minting NFT from user: "+ JSON.stringify(user));
+        console.log();
+
+        const wallet = await getUserWallet(user);
+        const blob = new Blob([fs.readFileSync(req.file.path)]);
+
+        // upload a file to ipfs
+        const uploadedFileResponse = await pinata.upload.file(blob);
+
+        console.log("File uploading response: "+JSON.stringify(uploadedFileResponse));
+        console.log();
+        const fileUploadUrl = `https://${pinataGateway}/ipfs/${uploadedFileResponse.IpfsHash}`;
+
+        const { name, price, description } = req.body;
+        if (!name || !price || !description || !fileUploadUrl) {
+            console.log("Some field are missing");
+            console.log();
+            return res.status(400).json({ success: false, message: `Some field of NFT not found` });;
+        }
+
+        const nftMintingTransactionInitiationMessage = 'NFT Minting transaction started successfully.';
+        const asyncListJob = new AsyncJobStatus({ user: user.username, status: 'PENDING', message: nftMintingTransactionInitiationMessage });
+        await asyncListJob.save();
+
+        const uploadedJsonResponse = await pinata.upload.json({ name, description, price, image: fileUploadUrl });
+        const tokenURI = `https://${pinataGateway}/ipfs/${uploadedJsonResponse.IpfsHash}`;
+
+        nftService.mintNFT(tokenURI, wallet)
+        .then(async (nftTx) => {
+            if (!nftTx.nft_minted) {
+                await AsyncJobStatus.findByIdAndUpdate(
+                    asyncListJob._id,
+                    { status: 'FAILED', message: nftTx.error }
+                );
+            }
+            else {
+                await AsyncJobStatus.findByIdAndUpdate(
+                    asyncListJob._id,
+                    { status: 'DONE', message: `NFT Minted successfully with id as ${nftTx.tokenid}.` }
+                );
+            }
+        })
+        .catch(async (err) => {
+            await AsyncJobStatus.findByIdAndUpdate(
+                asyncListJob._id,
+                { status: 'FAILED', message: err }
+            );
+        });
+
+        fs.unlinkSync(req.file.path);  // delete the file as it's processed
+        return res.status(202).json({ success: true, result: {
+            id: asyncListJob._id,
+            status: 'PENDING',
+            message: nftMintingTransactionInitiationMessage
+        } });
+    } catch (error) {
+        return res.status(500).json({ success: false, message: error.message });
+    }
+};
+
 exports.listNFTOnMarketplace = async (req, res) => {
     try {
         // Fetch user and decrypt the mnemonic
@@ -214,7 +292,6 @@ exports.getAsyncJobStatus = async (req, res) => {
         return res.status(500).json({ success: false, message: error.message });
     }
 }
-
 
 exports.getNftDetail = async (req, res) => {
     const { nftId } = req.params;
@@ -348,7 +425,7 @@ exports.resellNFTJob = async (req, res) => {
             if (!tx.item_listed) {
                 await AsyncJobStatus.findByIdAndUpdate(
                     asyncListJob._id,
-                    { status: 'FAILED', message: listNFTTxRes.error }
+                    { status: 'FAILED', message: tx.error }
                 );    
             } else {
                 await AsyncJobStatus.findByIdAndUpdate(
