@@ -1,8 +1,8 @@
 import {TbLayoutDashboard} from 'react-icons/tb'
 import {HiTemplate} from 'react-icons/hi'
-import {GiSellCard} from 'react-icons/gi'
+import {GiSellCard, GiToken} from 'react-icons/gi'
 import {AiFillCrown} from 'react-icons/ai'
-import { MdGeneratingTokens } from "react-icons/md";
+import { AiOutlineTransaction } from "react-icons/ai";
 
 export const navLinks = [
     {
@@ -28,6 +28,11 @@ export const navLinks = [
     {
         title: "Buy Token ",
         link: "/buy-token",
-        icon: <MdGeneratingTokens />
+        icon: <GiToken />
+    },
+    {
+        title: "Transactions ",
+        link: "/transactions",
+        icon: <AiOutlineTransaction />
     }
 ]
