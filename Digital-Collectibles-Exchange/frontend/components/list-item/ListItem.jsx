@@ -10,12 +10,15 @@ import NFTMarketplaceAbi from "../../abi/NFTMarketplace.json";
 import Input from "../../subcomponents/inputs/Input";
 import { AiOutlineArrowUp } from "react-icons/ai";
 import BtnMain from "../../subcomponents/btns/BtnMain";
+import Loading from "../../subcomponents/loading/Loading";
 
 
 export default function ListItem() {
   const router = useRouter();
   const [isListing, setisListing] = useState(false);
   const [file, setFile] = useState();
+  const [loading, setLoading] = useState(false);
+  const [isDuplicateNFTContent, setDuplicateNFTContent] = useState(false);
   const [formData, setFormData] = useState({
     price: "",
     name: "",
@@ -34,10 +37,17 @@ export default function ListItem() {
       return;
     }
     try {
+      setLoading(true);
       const uploadedFileResponse = await pinata.upload.file(fileData);
       console.log(uploadedFileResponse);
+      if (uploadedFileResponse.isDuplicate) {
+        setDuplicateNFTContent(true);
+        setLoading(false);
+        return;
+      }
       const url = `https://${pinataGateway}/ipfs/${uploadedFileResponse.IpfsHash}`;
       setFile(url);
+      setLoading(false);
     } catch (error) {
         console.log(
           "Error in onChange function , You are in catch of ListItem component ",
@@ -133,58 +143,62 @@ export default function ListItem() {
   };
 
   return (
-    <div className="flex justify-center">
-      <div className="md:w-3/6">
-        <form action="">
-          <Input
-            id="name"
-            placeholder="e.g.Monkey"
-            label="Name"
-            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          />
-        </form>
-        <Input
-          id="description"
-          placeholder="e.g.This is most unique monkey in the world."
-          label="Description"
-          onChange={(e) =>
-            setFormData({ ...formData, description: e.target.value })
-          }
-        />
-        <Input
-          id="price"
-          placeholder="e.g.10 (In CSDP)"
-          label="Price"
-          onChange={(e) => {
-            console.log(formData.price);
-            setFormData({ ...formData, price: e.target.value });
-            console.log(formData);
-          }}
-        />
-        <Input
-          id="file"
-          placeholder="Choose image file"
-          label="NFT Image"
-          type="file"
-          onChange={onChange}
-        />
-        <div className="">
-          {file && (
-            <img
-              className="rounded-xl mt-4 mb-10 w-96"
-              src={file}
-              alt="Choosen image"
+       <div className="flex justify-center">
+        <div className="md:w-3/6">
+          <form action="">
+            <Input
+              id="name"
+              placeholder="e.g.Monkey"
+              label="Name"
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
             />
-          )}
-        </div>
-          <BtnMain
-            text="List NFT"
-            icon={<AiOutlineArrowUp className="text-2xl" />}
-            className="w-full text-lg"
-            onClick={listAnItem}
-            disabled={isListing}
+          </form>
+          <Input
+            id="description"
+            placeholder="e.g.This is most unique monkey in the world."
+            label="Description"
+            onChange={(e) =>
+              setFormData({ ...formData, description: e.target.value })
+            }
           />
+          <Input
+            id="price"
+            placeholder="e.g.10 (In CSDP)"
+            label="Price"
+            onChange={(e) => {
+              console.log(formData.price);
+              setFormData({ ...formData, price: e.target.value });
+              console.log(formData);
+            }}
+          />
+          <Input
+            id="file"
+            placeholder="Choose image file"
+            label="NFT Image"
+            type="file"
+            onChange={onChange}
+          />
+          <div className="">
+            {file && (
+              <img
+                className="rounded-xl mt-4 mb-10 w-96"
+                src={file}
+                alt="Choosen image"
+              />
+            )} 
+          </div>
+            <BtnMain
+              text="List NFT"
+              icon={<AiOutlineArrowUp className="text-2xl" />}
+              className="w-full text-lg"
+              onClick={listAnItem}
+              disabled={isListing || loading}
+            />
+            {isDuplicateNFTContent && (
+              <h1 style={{ marginTop: 40, fontSize: 30, color: "red" }}>Duplicate NFT content not allowed... You'll be prosecuted</h1>
+            )}
+        </div>
+        
       </div>
-    </div>
   );
 }

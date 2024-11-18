@@ -25,8 +25,8 @@ export default function AllNFTs() {
       NFTMarketplaceAbi.abi,
       provider
     );
-    const data = await nftMarketPlaceContract.getAllListedItems();
-
+    let data = await nftMarketPlaceContract.getAllListedItems();
+    data = data.filter((i) => +i.tokenId !== 0);
     const allItems = await Promise.all(
       data?.map(async (i) => {
         let convertedPrice = ethers.utils.formatUnits(
@@ -51,7 +51,6 @@ export default function AllNFTs() {
     setLoading(false);
   };
 
-
   useEffect(() => {
     const load = () => {
       loadAllNFTs();
@@ -64,7 +63,7 @@ export default function AllNFTs() {
       {loading == true ? (
         <Loading />
       ) : (
-      <div className="flex flex-row space-x-4 overflow-x-auto">
+      <div className="flex flex-row flex-wrap space-x-4 overflow-x-auto">
         {allNFTs.length && !loading ? (
           allNFTs?.map((nft, index) => (
             <div key={index}>
