@@ -22,7 +22,8 @@ exports.registerUser = async ({ username, password, mnemonic }) => {
     // Encrypt the mnemonic before storing
     const encryptedMnemonic = encryptMnemonic(mnemonic);
 
-    const newUser = new User({ username, password: hashedPassword, mnemonic: encryptedMnemonic });
+    const newUser = new User({ username, password: hashedPassword, mnemonic: encryptedMnemonic, lastLimitUpdateTime: Math.floor(Date.now() / 1000), numReqLeft: 2 });
+
     await newUser.save();
     console.log("User Details saved are : "+newUser);
 
