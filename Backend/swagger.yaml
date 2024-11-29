@@ -13,10 +13,10 @@ components:
       type: http
       scheme: noauth
 paths:
-  /api/v1/auth/register:
+  /api/v1/users/:
     post:
       tags:
-        - default
+        - User Management
       summary: Register
       requestBody:
         content:
@@ -77,10 +77,10 @@ paths:
                       type: string
                       description: Error message explaining the issue.
       
-  /api/v1/auth/login:
+  /api/v1/users/sessions:
     post:
       tags:
-        - default
+        - User Management
       summary: Login
       requestBody:
         content:
@@ -136,10 +136,10 @@ paths:
                     
        
                     
-  /api/v1/user/{user2Id}/wallet:
+  /api/v1/users/{user2Id}/wallet:
     get:
       tags:
-        - default
+        - Wallet Management
       summary: wallet-info
       security:
         - bearerAuth: []
@@ -206,10 +206,10 @@ paths:
                       
                       
                       
-  /api/v1/user/wallet:
+  /api/v1/users/wallet:
     post:
       tags:
-        - default
+        - Wallet Management
       summary: wallet-info mnemonic
       requestBody:
         content:
@@ -284,7 +284,7 @@ paths:
   /api/v1/nft/mint:
     post:
       tags:
-        - default
+        - NFT
       summary: Mint NFT
       requestBody:
         content:
@@ -375,10 +375,41 @@ paths:
                       
                       
                       
+  /api/v1/nft/{nftId}:
+    get:
+      tags:
+        - NFT
+      summary: Get NFT details
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: nftId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+            description: Internal server error
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                   success:
+                      type: boolean
+                      description: Indicates if the request was unsuccessful.
+                   message:
+                      type: string
+                      description: Error message explaining the issue.                    
   /api/v1/nft/mint/jobs:
     post:
       tags:
-        - default
+        - NFT (Async)
       summary: Mint NFT (Async)
       requestBody:
         content:
@@ -473,7 +504,7 @@ paths:
   /api/v1/nft/mint/jobs/{jobId}:
     get:
       tags:
-        - default
+        - NFT (Async)
       summary: Get NFT Minting Job Status
       security:
         - bearerAuth: []
@@ -515,14 +546,20 @@ paths:
                       description: Indicates if the request was unsuccessful.
                    message:
                       type: string
-                      description: Error message explaining the issue.
+                      description: Error message explaining the issue.                 
                       
                       
                       
-  /api/v1/nft/{nftId}/listing:
+                      
+                      
+                      
+                      
+                      
+                      
+  /api/v1/marketplace/{nftId}/listings:
     post:
       tags:
-        - default
+        - NFT MarketPlace (Sync)
       summary: List NFT on marketplace
       requestBody:
         content:
@@ -606,15 +643,225 @@ paths:
                       description: Indicates if the request was unsuccessful.
                    message:
                       type: string
+                      description: Error message explaining the issue.                    
+                      
+                      
+  /api/v1/marketplace/listings:
+    get:
+      tags:
+        - NFT MarketPlace (Sync)
+      summary: Get All Listed NFT on marketplace
+      security:
+        - noauthAuth: []
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+            description: Internal server error
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                   success:
+                      type: boolean
+                      description: Indicates if the request was unsuccessful.
+                   message:
+                      type: string
+                      description: Error message explaining the issue.
+ 
+ 
+ 
+  /api/v1/users/{user1Id}/nft:
+    get:
+      tags:
+        - NFT MarketPlace (Sync)
+      summary: Get User Listed NFT on marketplace
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: listed
+          in: query
+          schema:
+            type: boolean
+          example: 'true'
+          required: true
+        - name: user1Id
+          in: path
+          schema:
+            type: string
+          required: true
+        
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+            
+        '500':
+            description: Internal server error
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                   success:
+                      type: boolean
+                      description: Indicates if the request was unsuccessful.
+                   message:
+                      type: string
                       description: Error message explaining the issue.
                       
                       
                       
                       
-  /api/v1/nft/{nftId}/listing/jobs:
+  /api/v1/marketplace/listings/{itemId}:
+    put:
+      tags:
+        - NFT MarketPlace (Sync)
+      summary: Buy NFT or Resell User Owned NFT
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example: ''
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: itemId
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: op
+          in: query
+          schema:
+            type: string
+            enum:
+              - "buy"
+              - "resell"
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+            
+        '429':
+            description: Too many request
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                   success:
+                      type: boolean
+                      description: Indicates if the request was unsuccessful.
+                   message:
+                      type: string
+                      description: Error message explaining the issue.
+        '500':
+            description: Internal server error
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                   success:
+                      type: boolean
+                      description: Indicates if the request was unsuccessful.
+                   message:
+                      type: string
+                      description: Error message explaining the issue.
+                      
+  /api/v1/users/{user2Id}/transactions:
+    get:
+      tags:
+        - NFT MarketPlace (Sync)
+      summary: Get User Transactions
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: user2Id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+        '500':
+            description: Internal server error
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                   success:
+                      type: boolean
+                      description: Indicates if the request was unsuccessful.
+                   message:
+                      type: string
+                      description: Error message explaining the issue.                    
+                      
+                      
+  /api/v1/nft/{itemId}:
+    delete:
+      tags:
+        - NFT MarketPlace (Sync)
+      summary: Delete NFT
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: itemId
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+            
+        '429':
+            description: Too many request
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                   success:
+                      type: boolean
+                      description: Indicates if the request was unsuccessful.
+                   message:
+                      type: string
+                      description: Error message explaining the issue.
+        '500':
+            description: Internal server error
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                   success:
+                      type: boolean
+                      description: Indicates if the request was unsuccessful.
+                   message:
+                      type: string
+                      description: Error message explaining the issue.                    
+  
+  
+  
+  /api/v1/marketplace/{nftId}/listings/jobs:
     post:
       tags:
-        - default
+        - NFT MarketPlace (Async)
       summary: List NFT on marketplace (Async)
       requestBody:
         content:
@@ -702,10 +949,10 @@ paths:
                       
                       
                       
-  /api/v1/nft/listing/jobs/{jobId}:
+  /api/v1/marketplace/listings/jobs/{jobId}:
     get:
       tags:
-        - default
+        - NFT MarketPlace (Async)
       summary: Get NFT Listing Job Status
       security:
         - bearerAuth: []
@@ -732,155 +979,13 @@ paths:
                       description: Indicates if the request was unsuccessful.
                    message:
                       type: string
-                      description: Error message explaining the issue.
-  /api/v1/nft/listings:
-    get:
-      tags:
-        - default
-      summary: Get All Listed NFT on marketplace
-      security:
-        - noauthAuth: []
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-        '500':
-            description: Internal server error
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                   success:
-                      type: boolean
-                      description: Indicates if the request was unsuccessful.
-                   message:
-                      type: string
-                      description: Error message explaining the issue.
-  /api/v1/nft/{nftId}:
-    get:
-      tags:
-        - default
-      summary: Get NFT details
-      security:
-        - noauthAuth: []
-      parameters:
-        - name: nftId
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-        '500':
-            description: Internal server error
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                   success:
-                      type: boolean
-                      description: Indicates if the request was unsuccessful.
-                   message:
-                      type: string
-                      description: Error message explaining the issue.
-  /api/v1/user/{user1Id}/nft:
-    get:
-      tags:
-        - default
-      summary: Get User Listed NFT on marketplace
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: listed
-          in: query
-          schema:
-            type: boolean
-          example: 'true'
-        - name: user1Id
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-            
-        '500':
-            description: Internal server error
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                   success:
-                      type: boolean
-                      description: Indicates if the request was unsuccessful.
-                   message:
-                      type: string
-                      description: Error message explaining the issue.
-  /api/v1/nft/{itemId}/buy:
+                      description: Error message explaining the issue.                    
+                      
+                      
+  /api/v1/marketplace/listings/{itemId}/jobs:
     put:
       tags:
-        - default
-      summary: Buy NFT
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example: ''
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: itemId
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-            
-        '429':
-            description: Too many request
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                   success:
-                      type: boolean
-                      description: Indicates if the request was unsuccessful.
-                   message:
-                      type: string
-                      description: Error message explaining the issue.
-        '500':
-            description: Internal server error
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                   success:
-                      type: boolean
-                      description: Indicates if the request was unsuccessful.
-                   message:
-                      type: string
-                      description: Error message explaining the issue.
-  /api/v1/nft/{itemId}/buy/jobs:
-    put:
-      tags:
-        - default
+        - NFT MarketPlace (Async)
       summary: Buy NFT (Async)
       requestBody:
         content:
@@ -896,6 +1001,14 @@ paths:
           schema:
             type: string
           required: true
+        - name: op
+          in: query
+          schema:
+            type: string
+            enum:
+              - "buy"
+              - "resell"
+          required: true
       responses:
         '200':
           description: Successful response
@@ -928,257 +1041,24 @@ paths:
                    message:
                       type: string
                       description: Error message explaining the issue.
-  /api/v1/nft/buy/jobs/{jobId}:
+                      
+                      
+                      
+  /api/v1/marketplace/listings/{itemId}/jobs/{jobId}:
     get:
       tags:
-        - default
+        - NFT MarketPlace (Async)
       summary: Get Buy NFT Job Status
       security:
         - bearerAuth: []
       parameters:
+        - name: itemId
+          in: path
+          schema:
+            type: string
+          required: true
+          
         - name: jobId
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-        '500':
-            description: Internal server error
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                   success:
-                      type: boolean
-                      description: Indicates if the request was unsuccessful.
-                   message:
-                      type: string
-                      description: Error message explaining the issue.
-  /api/v1/user/{user2Id}/nft:
-    get:
-      tags:
-        - default
-      summary: Get User Owned NFT
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: user2Id
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-        '500':
-            description: Internal server error
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                   success:
-                      type: boolean
-                      description: Indicates if the request was unsuccessful.
-                   message:
-                      type: string
-                      description: Error message explaining the issue.
-  /api/v1/nft/{itemId}/resell:
-    put:
-      tags:
-        - default
-      summary: Resell User Owned NFT
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                resell_price: 60
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: itemId
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-            
-        '429':
-            description: Too many request
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                   success:
-                      type: boolean
-                      description: Indicates if the request was unsuccessful.
-                   message:
-                      type: string
-                      description: Error message explaining the issue.
-        '500':
-            description: Internal server error
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                   success:
-                      type: boolean
-                      description: Indicates if the request was unsuccessful.
-                   message:
-                      type: string
-                      description: Error message explaining the issue.
-  /api/v1/nft/{itemId}/resell/jobs:
-    put:
-      tags:
-        - default
-      summary: Resell User Owned NFT (Async)
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              example:
-                resell_price: 6
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: itemId
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-            
-        '429':
-            description: Too many request
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                   success:
-                      type: boolean
-                      description: Indicates if the request was unsuccessful.
-                   message:
-                      type: string
-                      description: Error message explaining the issue.
-        '500':
-            description: Internal server error
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                   success:
-                      type: boolean
-                      description: Indicates if the request was unsuccessful.
-                   message:
-                      type: string
-                      description: Error message explaining the issue.
-  /api/v1/nft/resell/jobs/{jobId}:
-    get:
-      tags:
-        - default
-      summary: Get Resell User Owned NFT Job Status
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: jobId
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-        '500':
-            description: Internal server error
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                   success:
-                      type: boolean
-                      description: Indicates if the request was unsuccessful.
-                   message:
-                      type: string
-                      description: Error message explaining the issue.
-  /api/v1/nft/{itemId}:
-    delete:
-      tags:
-        - default
-      summary: Delete NFT
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: itemId
-          in: path
-          schema:
-            type: string
-          required: true
-      responses:
-        '200':
-          description: Successful response
-          content:
-            application/json: {}
-            
-        '429':
-            description: Too many request
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                   success:
-                      type: boolean
-                      description: Indicates if the request was unsuccessful.
-                   message:
-                      type: string
-                      description: Error message explaining the issue.
-        '500':
-            description: Internal server error
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                   success:
-                      type: boolean
-                      description: Indicates if the request was unsuccessful.
-                   message:
-                      type: string
-                      description: Error message explaining the issue.
-  /api/v1/user/{user2Id}/transactions:
-    get:
-      tags:
-        - default
-      summary: Get User Transactions
-      security:
-        - bearerAuth: []
-      parameters:
-        - name: user2Id
           in: path
           schema:
             type: string
