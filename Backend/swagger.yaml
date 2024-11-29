@@ -746,9 +746,18 @@ paths:
     get:
       tags:
         - NFT MarketPlace (Sync)
-      summary: Get All Listed NFT on marketplace
+      summary: Get All Listed NFT on marketplace (Sorted by Price {ASC})
       security:
         - noauthAuth: []
+      parameters:
+        - name: search
+          in: query
+          description: "Search query string"
+          required: false
+          schema:
+            type: string
+            example: "laptop"
+
       responses:
         '200':
           description: Successful response containing listed NFTs
@@ -816,8 +825,8 @@ paths:
   /api/v1/users/{user1Id}/nft:
     get:
       tags:
-        - NFT MarketPlace (Sync)
-      summary: Get User Listed NFT on marketplace or user owned NFTs
+        - NFT MarketPlace (Sync) 
+      summary: Get User Listed NFT on marketplace or user owned NFTs (Sorted by Price {ASC})
       security:
         - bearerAuth: []
       parameters:
@@ -832,6 +841,14 @@ paths:
           schema:
             type: string
           required: true
+          
+        - name: search
+          in: query
+          description: "Search query string"
+          required: false
+          schema:
+            type: string
+            example: "laptop"
         
       responses:
         '200':
@@ -991,7 +1008,7 @@ paths:
     get:
       tags:
         - NFT MarketPlace (Sync)
-      summary: Get User Transactions
+      summary: Get User Transactions (Sorted by TimeStamp {Most recent on Top})
       security:
         - bearerAuth: []
       parameters:
