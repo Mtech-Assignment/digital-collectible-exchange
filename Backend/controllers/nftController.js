@@ -688,6 +688,7 @@ exports.resellNFTJob = async (req, res) => {
 
 exports.userTransactions = async (req, res) => {
     const { userId } = req.params;
+    const { page, offset } = req.query;
     try {
         // Fetch user and decrypt the mnemonic
         const user = await User.findById(req.user.id);
@@ -715,7 +716,7 @@ exports.userTransactions = async (req, res) => {
         console.log();
 
         const userWallet = await getUserWallet(user);
-        const userTxns = await nftService.getUserTransactions(userWallet.address);
+        const userTxns = await nftService.getUserTransactions(userWallet.address, page, offset);
         res.status(200).json({ success: true, transactions: userTxns.result });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });

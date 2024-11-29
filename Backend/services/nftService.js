@@ -187,8 +187,8 @@ exports.resellNFT = async function(itemId, resellPrice, resellerWallet) {
     return { item_listed: true };
 };
 
-exports.getUserTransactions = async function(userAddress) {
-    const etherscanUrl = `https://api-holesky.etherscan.io/api?module=account&action=txlist&address=${userAddress}&apikey=${process.env.ETHERSCAN_API_KEY}`;
+exports.getUserTransactions = async function(userAddress, page=1, offset=10) {
+    const etherscanUrl = `https://api-holesky.etherscan.io/api?module=account&action=txlist&address=${userAddress}&apikey=${process.env.ETHERSCAN_API_KEY}&sort=desc&page=${page}&offset=${offset}`;
 
     const txns = await fetch(etherscanUrl);
     return await txns.json();
