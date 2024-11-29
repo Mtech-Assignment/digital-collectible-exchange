@@ -1,11 +1,11 @@
 const express = require('express');
 const nftRoutes = require('./nftRoutes');
 const userRoutes = require('./userRoutes');
-const authRoutes = require('./authRoutes');
+const marketplaceRoutes = require('./marketplaceRoutes');
 const router = express.Router();
 
-router.use('/user', userRoutes);
+router.use('/users', userRoutes);
 router.use('/nft', nftRoutes);
-router.use('/auth', authRoutes);
+router.use('/marketplace', marketplaceRoutes)
 
 module.exports = router;

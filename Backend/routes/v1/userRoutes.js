@@ -3,6 +3,7 @@ const router = express.Router();
 const authenticateJWT = require('../../middleware/auth');
 const nftController = require('../../controllers/nftController');
 const walletController = require('../../controllers/walletController');
+const authController = require('../../controllers/authController');
 
 // Get the user transactions
 router.get('/:userId/transactions', authenticateJWT, nftController.userTransactions);
@@ -21,5 +22,11 @@ router.get('/:userId/nft', authenticateJWT, (req, res, next) => {
         nftController.getUserOwnedNFTOnMarketplace(req, res, next);
     }
 });
+
+// Register endpoint
+router.post('/', authController.register);
+
+// Login endpoint
+router.post('/sessions', authController.login);
 
 module.exports = router;
