@@ -4,6 +4,8 @@ const User = require('../models/User');
 const { hashPassword, comparePassword, encryptMnemonic } = require('../utils/encrypt');
 const config = require('../config/config');
 
+
+
 // Register a new user with encrypted mnemonic
 exports.registerUser = async ({ username, password, mnemonic }) => {
     const existingUser = await User.findOne({ username });
@@ -29,6 +31,7 @@ exports.registerUser = async ({ username, password, mnemonic }) => {
 
     return { id: newUser._id, username: newUser.username };
 };
+
 
 // Login a user and generate JWT
 exports.loginUser = async ({ username, password }) => {
