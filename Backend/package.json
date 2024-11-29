@@ -21,9 +21,9 @@
     "multer": "^1.4.5-lts.1",
     "nft-marketplace-dapp": "file:",
     "pinata-web3": "^0.5.1",
-    "yamljs": "^0.3.0",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "yamljs": "^0.3.0"
   },
   "devDependencies": {
     "nodemon": "^3.1.7"

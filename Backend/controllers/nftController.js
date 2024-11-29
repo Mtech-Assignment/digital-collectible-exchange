@@ -46,6 +46,8 @@ exports.getListedNFTOnMarketplace = async (req, res) => {
             });
         }
 
+        listedNftList.listed_nft_items = listedNftList.listed_nft_items.sort((a, b) => a.price - b.price);
+
         res.status(200).json({ success: true, listedNftList });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -93,6 +95,9 @@ exports.getUserOwnedNFTOnMarketplace = async (req, res) => {
                 return nft.name.toLowerCase().includes(search.toLowerCase()) | nft.description.toLowerCase().includes(search.toLowerCase());
             });
         }
+
+        userOwnedNfts.owned_nft_items = userOwnedNfts.owned_nft_items.sort((a, b) => a.price - b.price);
+
         res.status(200).json({ success: true, userOwnedNfts });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -139,6 +144,9 @@ exports.getUserListedNFTOnMarketplace = async (req, res) => {
                 return nft.name.toLowerCase().includes(search.toLowerCase()) | nft.description.toLowerCase().includes(search.toLowerCase());
             });
         }
+
+        userListedNfts.listed_nfts = userListedNfts.listed_nfts.sort((a, b) => a.price - b.price);
+
         res.status(200).json({ success: true, listed_nfts: userListedNfts });
     } catch (error) {
         res.status(500).json({ success: false, message: error.message });
@@ -686,6 +694,7 @@ exports.resellNFTJob = async (req, res) => {
     }
 };
 
+// sorted by time (Most recent on the top)
 exports.userTransactions = async (req, res) => {
     const { userId } = req.params;
     const { page, offset } = req.query;
