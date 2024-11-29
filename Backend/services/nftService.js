@@ -193,14 +193,3 @@ exports.getUserTransactions = async function(userAddress, page=1, offset=10) {
     const txns = await fetch(etherscanUrl);
     return await txns.json();
 };
-
-exports.removeItemFromMarketplace = async function(userWallet, itemId) {
-    try {
-        const wallet = new ethers.Wallet(userWallet.privateKey, provider);
-        const mktPlaceContractWithSigner = marketplaceContract.connect(wallet);
-        const marketplaceItemDeletionTxn = await mktPlaceContractWithSigner.unlistItem(itemId); 
-        await marketplaceItemDeletionTxn.wait();
-    } catch(error) {
-        return { error };
-    }
-}
