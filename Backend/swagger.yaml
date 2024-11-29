@@ -1018,6 +1018,20 @@ paths:
                     items:
                       $ref: '#/components/schemas/Transaction'
                       
+        '429':
+            description: Too many request
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                   success:
+                      type: boolean
+                      description: Indicates if the request was unsuccessful.
+                   message:
+                      type: string
+                      description: Error message explaining the issue.
+                      
         '500':
             description: Internal server error
             content:
@@ -1367,6 +1381,21 @@ paths:
                         message:
                           type: string
                           description: Indicates if the request was unsuccessful
+                          
+        '429':
+            description: Too many request
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                   success:
+                      type: boolean
+                      description: Indicates if the request was unsuccessful.
+                   message:
+                      type: string
+                      description: Error message explaining the issue.
+        
         '500':
             description: Internal server error
             content:
@@ -1381,3 +1410,6 @@ paths:
                       type: string
                       description: Error message explaining the issue.
                       
+                      
+  
+    
