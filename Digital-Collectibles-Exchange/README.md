@@ -1,6 +1,6 @@
 # FullStack-NFT-Marketplace-DApp
 
-Complete Full Stack NFT Marketplace (Decentralized Application) using solidity language, hardhat, and next.js framework for frontend.
+Complete Full Stack NFT Marketplace (Decentralized Application) using solidity language, remix ide, and next.js framework for frontend.
 
 **Dashboard**
 &nbsp;
@@ -26,14 +26,14 @@ Complete Full Stack NFT Marketplace (Decentralized Application) using solidity l
 - See **Your Listed NFTs** and NFts you have sold.
 - Good UI
 
-_NFT Marketplace Contract Deployed on **Rinkeby Test Network**_ -> 0xa0da870859847DAeae4A291fd0606b3525eE154F
-_NFT Contract Deployed on **Rinkeby Test Network**_ -> 0x1Ea39cEd6b34471f5081749751aBE0e1C3867E27
+_NFT Marketplace Contract Deployed on **Holesky Test Network**_ -> 0xFF17205b7ada750BD9553A1c9378bE547aaF8d47
+_NFT Contract Deployed on **Holesky Test Network**_ -> 0xb99Ce50Eb50dD6276b3A385f845839188cc0c1d0
 
 **_Check It at_** -> Not deployed at **(Deployed on fleek (IPFS)**
 
-_Check NFT Marketplace Smart Contract At_ -> https://rinkeby.etherscan.io/address/0xa0da870859847DAeae4A291fd0606b3525eE154F#code
+_Check NFT Marketplace Smart Contract At_ -> https://holesky.etherscan.io/address/0xFF17205b7ada750BD9553A1c9378bE547aaF8d47#code
 
-_Check NFT Marketplace Smart Contract At_ -> https://rinkeby.etherscan.io/address/0x1Ea39cEd6b34471f5081749751aBE0e1C3867E27#code
+_Check NFT Smart Contract At_ -> https://holesky.etherscan.io/address/0xb99Ce50Eb50dD6276b3A385f845839188cc0c1d0#code
 
 ## How to Setup in your local enviroment :-
 
@@ -42,14 +42,6 @@ _Check NFT Marketplace Smart Contract At_ -> https://rinkeby.etherscan.io/addres
     1. cd frontend
     2. yarn
     3. yarn run dev
-
-### Blockchain
-
-    1. cd blockchain
-    2. yarn
-    3. setup env
-    4. yarn hardhat test || npx hardhat test
-    5. yarn hardhat run scripts/deploy.js --network localhost
 
 ## Technologies/Frameworks Used :-
 
@@ -62,7 +54,5 @@ _Check NFT Marketplace Smart Contract At_ -> https://rinkeby.etherscan.io/addres
 ## Blockchain
 
 1. **Solidity** (To develop Smart Contract)
-2. **Javascript** (For deploying scripts)
-3. **Chai** (For testing Smart Contract)
-4. **Openzeppelin** For minting NFT
-5. **Hardhat**
+2. **Javascript/Typescript** (For deploying scripts)
+3. **Openzeppelin** For token specs
