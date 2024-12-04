@@ -29,7 +29,7 @@ Complete Full Stack NFT Marketplace (Decentralized Application) using solidity l
 _NFT Marketplace Contract Deployed on **Holesky Test Network**_ -> 0xFF17205b7ada750BD9553A1c9378bE547aaF8d47
 _NFT Contract Deployed on **Holesky Test Network**_ -> 0xb99Ce50Eb50dD6276b3A385f845839188cc0c1d0
 
-**_Check It at_** -> Not deployed at **(Deployed on fleek (IPFS)**
+**_Check It at_** -> Not deployed at **(Deployed on Pinata (IPFS)**
 
 _Check NFT Marketplace Smart Contract At_ -> https://holesky.etherscan.io/address/0xFF17205b7ada750BD9553A1c9378bE547aaF8d47#code
 
