@@ -18,11 +18,11 @@ export default function Transactions() {
     const address = await signer.getAddress();
     setCurrentUserAddress(address);
 
-    const transactionUrl = `https://api-holesky.etherscan.io/api?module=account&action=txlist&address=${address}&apikey=6C15HE4Y7UM19BFJRHX7TZ8KDXUG7SHVWV`
+    const transactionUrl = `https://api-holesky.etherscan.io/api?module=account&action=txlist&address=${address}&apikey=6C15HE4Y7UM19BFJRHX7TZ8KDXUG7SHVWV&sort=desc&page=1&offset=10`
     const transactionData = await (await fetch(transactionUrl)).json();
     console.log(transactionData, currentUserAddress)
 
-    setTransactions(transactionData.result.slice(0, 10));
+    setTransactions(transactionData.result);
     setLoading(false);
   };
 
@@ -60,7 +60,7 @@ export default function Transactions() {
             }>
                 {transactions?.map((tx, index) =>
                     (
-                        <div key={index} style={{marginBottom: 40}}>
+                        <div key={index} style={{marginBottom: 20, marginTop: 20}}>
                             <h1 style={{fontSize: 20}}>BlockNumber: {tx.blockNumber}</h1>
                             <h1 style={{fontSize: 20}}>TimeStamp: {tx.timeStamp}</h1>
                             <h1 style={{fontSize: 20}}>From: {tx.from}</h1>
@@ -71,7 +71,9 @@ export default function Transactions() {
                             <h1 style={{fontSize: 20}}>functionName: {tx.functionName}</h1>
                             <h1 style={{fontSize: 20}}>ContractAddress: {tx.contractAddress}</h1>
                             <h1 style={{fontSize: 20}}>GasUsed: {tx.gasUsed}</h1>
+                            <div style={{borderTop: 1, width: 550, height: 2, backgroundColor: "black", marginTop: 20}}></div>
                         </div>
+                        
                     )
                 )}
             </div>
