@@ -36,8 +36,9 @@ export default function AllNFTs() {
         const tokenUri = await nftContract.tokenURI(i.tokenId);
         const metaData = await axios.get(tokenUri);
         let item = {
+          tokenId: i.tokenId,
           price: convertedPrice,
-          tokenId: i.itemId.toNumber(),
+          itemId: i.itemId,
           seller: i.seller,
           owner: i.owner,
           image: metaData.data.image,

@@ -49,9 +49,9 @@ export default function MyItemId() {
       const tokenUri = await nftContract.tokenURI(data.tokenId);
       const metaData = await axios.get(tokenUri);
       let item = {
-        id: data.tokenId,
         price: convertedPrice,
-        tokenId: data.itemId.toNumber(),
+        tokenId: data.tokenId.toNumber(),
+        itemId: data.itemId.toNumber(),
         seller: data.seller,
         owner: data.owner,
         image: metaData.data.image,
@@ -65,7 +65,7 @@ export default function MyItemId() {
     setLoading(false);
   };
 
-  const resellNFT = async (price, tokenId) => {
+  const resellNFT = async (price, tokenId, itemId) => {
     setIsListing(true);
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
@@ -96,12 +96,12 @@ export default function MyItemId() {
     );
     await csdpApprovalTxn.wait();
 
-    const nftApprovalToMktPlaceContractTxn = await nftContract.approve(nftMarketplaceAddress, nftData.id);
+    const nftApprovalToMktPlaceContractTxn = await nftContract.approve(nftMarketplaceAddress, tokenId);
     await nftApprovalToMktPlaceContractTxn.wait();
 
     const transaction = await nftMarketPlaceContract.resellItem(
       nftAddress,
-      tokenId,
+      itemId,
       convertedPrice,
       // { value: listingPrice, }  // in case of sending ether
     );
@@ -139,7 +139,7 @@ export default function MyItemId() {
               text="List NFT"
               icon={<AiOutlineArrowUp className="text-2xl" />}
               className="text-lg w-full"
-              onClick={() => resellNFT(resellPrice, nftData.tokenId)}
+              onClick={() => resellNFT(resellPrice, nftData.tokenId, nftData.itemId)}
               disabled={isListing}
             />
           </div>

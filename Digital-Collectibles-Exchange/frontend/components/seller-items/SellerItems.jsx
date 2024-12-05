@@ -49,6 +49,7 @@ export default function SellerItems() {
             let item = {
               price: convertedPrice,
               sold: i.sold,
+              itemId: i.itemId.toNumber(),
               tokenId: i.tokenId.toNumber(),
               seller: i.seller,
               owner: i.owner,

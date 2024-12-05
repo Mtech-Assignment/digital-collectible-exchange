@@ -41,6 +41,7 @@ export default function ListedNFTItemId() {
       const metaData = await axios.get(tokenUri);
       let item = {
         price: convertedPrice,
+        itemId: router.query.itemid,
         tokenId: data.tokenId.toNumber(),
         seller: data.seller,
         owner: data.owner,
@@ -56,7 +57,7 @@ export default function ListedNFTItemId() {
     setLoading(false);
   };
 
-  const buyNFT = async (price, tokenId) => {
+  const buyNFT = async (price, itemId) => {
     setLoading(true);
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
@@ -85,7 +86,7 @@ export default function ListedNFTItemId() {
 
     const transaction = await nftMarketPlaceContract.buyItem(
       nftAddress,
-      tokenId,
+      itemId,
     //   { value: convertedPrice, } // incase of sending the ether
     );
     await transaction.wait();
@@ -108,7 +109,7 @@ export default function ListedNFTItemId() {
           text="Buy Back"
           icon={<AiOutlineArrowRight className="text-2xl" />}
           className="w-full"
-          onClick={() => buyNFT(nftData.price.toString(), nftData.tokenId)}
+          onClick={() => buyNFT(nftData.price.toString(), nftData.itemId)}
         />}
       </NftInfo>
     </div>

@@ -30,7 +30,7 @@ export default function Itemid() {
       provider
     );
     const data = await nftMarketPlaceContract.getParticularItem(
-      router.query.itemid
+      itemid
     );
 
     const allData = async () => {
@@ -42,6 +42,7 @@ export default function Itemid() {
       const metaData = await axios.get(tokenUri);
       let item = {
         price: convertedPrice,
+        itemId: itemid,
         tokenId: data.tokenId.toNumber(),
         seller: data.seller,
         owner: data.owner,
@@ -57,7 +58,7 @@ export default function Itemid() {
     setIsPurchasing(false)
   };
 
-  const buyNFT = async (price, tokenId) => {
+  const buyNFT = async (price, itemid) => {
     setIsPurchasing(true)
     const web3Modal = new Web3Modal();
     const connection = await web3Modal.connect();
@@ -89,7 +90,7 @@ export default function Itemid() {
 
     const transaction = await nftMarketPlaceContract.buyItem(
       nftAddress,
-      tokenId,
+      itemid,
       // { value: convertedPrice, }
     );
     await transaction.wait();
