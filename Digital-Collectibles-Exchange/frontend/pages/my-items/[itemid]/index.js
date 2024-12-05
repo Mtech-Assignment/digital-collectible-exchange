@@ -49,6 +49,7 @@ export default function MyItemId() {
       const tokenUri = await nftContract.tokenURI(data.tokenId);
       const metaData = await axios.get(tokenUri);
       let item = {
+        id: data.tokenId,
         price: convertedPrice,
         tokenId: data.itemId.toNumber(),
         seller: data.seller,
@@ -95,7 +96,7 @@ export default function MyItemId() {
     );
     await csdpApprovalTxn.wait();
 
-    const nftApprovalToMktPlaceContractTxn = await nftContract.approve(nftMarketplaceAddress, tokenId);
+    const nftApprovalToMktPlaceContractTxn = await nftContract.approve(nftMarketplaceAddress, nftData.id);
     await nftApprovalToMktPlaceContractTxn.wait();
 
     const transaction = await nftMarketPlaceContract.resellItem(

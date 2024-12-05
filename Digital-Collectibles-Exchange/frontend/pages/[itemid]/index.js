@@ -111,7 +111,7 @@ export default function Itemid() {
           text="Buy Now"
           icon={<AiOutlineArrowRight className="text-2xl" />}
           className="w-full"
-          onClick={() => buyNFT(nftData.price.toString(), itemid)}
+          onClick={() => buyNFT(nftData.price.toString(), nftData.itemId)}
           disabled={isPurchasing}
         />
       </NftInfo>
