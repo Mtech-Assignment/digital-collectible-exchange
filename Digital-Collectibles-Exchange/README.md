@@ -41,10 +41,13 @@ _Check NFT Smart Contract At_ -> https://holesky.etherscan.io/address/0xb99Ce50E
 
 ### Frontend (NPM Should be installed as a prerequisite)
 
+    **Make sure you have metamask wallet installed in the browser as a chrome extension**
     1. cd Digital-Collectibles-Exchange/frontend
     2. npm install
     3. npm run dev
-
+    4. Access the frontend in the localhost:3000 in the browser.
+    
+    
 ## Technologies/Frameworks Used :-
 
 ### Frontend
