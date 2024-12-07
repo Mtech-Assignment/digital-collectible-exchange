@@ -39,11 +39,11 @@ _Check NFT Smart Contract At_ -> https://holesky.etherscan.io/address/0xb99Ce50E
 
 ## How to Setup in your local enviroment :-
 
-### Frontend
+### Frontend (NPM Should be installed as a prerequisite)
 
-    1. cd frontend
-    2. yarn
-    3. yarn run dev
+    1. cd Digital-Collectibles-Exchange/frontend
+    2. npm install
+    3. npm run dev
 
 ## Technologies/Frameworks Used :-
 
