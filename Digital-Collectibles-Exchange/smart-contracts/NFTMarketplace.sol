@@ -12,6 +12,7 @@ error NFTMarketplace__ItemPriceIsZero(string message);
 error NFTMarketplace__ItemPriceNotMet(string message);
 error NFTMarketplace__ListingPriceIsNotMet(string message);
 error NFTMarketplace__YouAreNotOwnerOfThisItem(string message);
+error NFTMarketplace__InsufficientBalance(string message);
 
 contract NFTMarketplace is ReentrancyGuard {
 
@@ -164,6 +165,10 @@ contract NFTMarketplace is ReentrancyGuard {
         if (tradingToken.allowance(msg.sender, address(this)) < listingPrice) {
             revert NFTMarketplace__ListingPriceIsNotMet("Listing price is not met");
         }
+        
+        if (tradingToken.balanceOf(msg.sender) < listingPrice) {
+            revert NFTMarketplace__InsufficientBalance("Balance is less than the required price");
+        }
 
         // transfer the CSDP token from user to the contract address
         tradingToken.transferFrom(msg.sender, address(this), listingPrice);
@@ -214,6 +219,10 @@ contract NFTMarketplace is ReentrancyGuard {
             revert NFTMarketplace__ListingPriceIsNotMet("Listing Price is not met");
         }
 
+        if (tradingToken.balanceOf(msg.sender) < price) {
+            revert NFTMarketplace__InsufficientBalance("Balance is less than the required price");
+        }
+
         // transfer the CSDP token from user to the contract address
         tradingToken.transferFrom(msg.sender, address(this), price);
 
@@ -250,6 +259,10 @@ contract NFTMarketplace is ReentrancyGuard {
         // check if listingPrice is approved by the sender
         if (tradingToken.allowance(msg.sender, address(this)) < listingPrice) {
             revert NFTMarketplace__ListingPriceIsNotMet("Listing price is not met");
+        }
+
+        if (tradingToken.balanceOf(msg.sender) < listingPrice) {
+            revert NFTMarketplace__InsufficientBalance("Balance is less than the required price");
         }
 
         // transfer the CSDP token from user to the contract address

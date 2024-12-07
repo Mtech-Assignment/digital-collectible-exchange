@@ -5,15 +5,14 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Permit.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-contract CSDP is ERC20, ERC20Permit, Ownable, ReentrancyGuard {
+contract CSDP is ERC20, Ownable, ReentrancyGuard {
     uint256 public tokenPrice;
 
     // to restrict the total supply of CSDP
     uint256 private totalTokenSupply;
 
     constructor()
-        ERC20("CSDP", "CSDP") 
-        ERC20Permit("CSDP")
+        ERC20("CSDP", "CSDP")
         Ownable(msg.sender) // Specify the Ownable constructor
     {
         totalTokenSupply = 100000000 * 10 ** uint(decimals()); // 100 million total supply
