@@ -82,4 +82,5 @@ _Check NFT Smart Contract At_ -> https://holesky.etherscan.io/address/0xb99Ce50E
 1. Create an NFT/ERC721 project in Remix IDE and copy all 3 smart contracts by making a different file.
 2. Go to the deploy section in the remix ide from the left navigation bar and select the network you want to deploy the contract.
 3. If you want to deploy in any testnet then connect to that testnet first with the wallet and then connect your wallet to the remix ide in this way remix ide will automatically infer the network to which your wallet is connected.
-4. At last when the deploy button becomes active then you can deploy the contract to the network connected to the wallet. 
+4. At last when the deploy button becomes active then you can deploy the contract to the network connected to the wallet.
+5. [Repo](https://github.com/Mtech-Assignment/Smart-contract-deployement-script-remix-) for reference of deployment script auto-generated in the **Remix IDE** 
