@@ -57,7 +57,7 @@ _Check NFT Smart Contract At_ -> https://holesky.etherscan.io/address/0xb99Ce50E
 2. **Javascript/Typescript** (For deploying scripts)
 3. **Openzeppelin** For token specs
 
-## Deployment of smart contract using (Remix IDE)[https://remix.ethereum.org/]
+## Deployment of smart contract using [Remix IDE](https://remix.ethereum.org/)
 
 1. Create an NFT/ERC721 project in Remix IDE and copy all 3 smart contracts by making a different file.
 2. Go to the deploy section in the remix ide from the left navigation bar and select the network you want to deploy the contract.
