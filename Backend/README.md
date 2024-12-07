@@ -57,8 +57,10 @@ Follow these steps to set up the application locally:
 
 # API Documentation
 
-Full API details are available in the Swagger:  
-[http://localhost:8080/api-docs](http://localhost:8080/api-docs)
+Full API details are available in the Swagger:
+[Swagger Documentation](https://app.swaggerhub.com/apis/2023SL93045/NftMarketplace/1.0.0) <br />
+Can be accessed locally in [http://localhost:8080/api-docs](http://localhost:8080/api-docs)
+
 
 # Testing
 
