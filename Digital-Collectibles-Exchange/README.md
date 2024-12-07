@@ -14,8 +14,23 @@ Complete Full Stack NFT Marketplace (Decentralized Application) using solidity l
 
 **List NFT**
 &nbsp;
+<img width="958" alt="image" src="https://github.com/user-attachments/assets/182cb5fd-670d-4b25-ba3b-c3436a5c685b">
 
-<a href="https://ibb.co/k9G9FJj"><img src="https://i.ibb.co/dLfLytF/Screenshot-171.png" alt="Screenshot-171" border="0"></a>
+
+&nbsp;
+&nbsp;
+&nbsp;
+
+**Buy NFT**
+&nbsp;
+<img width="955" alt="image" src="https://github.com/user-attachments/assets/92b64a62-5083-4990-ae50-84225583f535">
+
+
+
+&nbsp;
+&nbsp;
+&nbsp;
+
 
 ## Functionalities :-
 
