@@ -85,7 +85,7 @@ export default function MyItems() {
                   </div>
               )}
               {!error && (
-                  <div className="flex flex-row space-x-4 overflow-x-auto">
+                  <div className="flex flex-row flex-wrap space-x-4 overflow-x-auto">
                     {allNFTs.length ? (
                         allNFTs.map((nft, index) => (
                             <div key={index}>
