@@ -47,16 +47,20 @@ Follow these steps to set up the application locally:
    npm install
 
 4. Create a .env file and add the necessary environment variables (e.g., API keys, database connection).
+    
+5. Need to have a MongoDB(either a docker image or local db) running and keep the DB connectin URL in the .env file so the index.js file can use it.
 
 
-5. Start the application:
+6. Start the application:
     ```bash
    npm run start
 
 # API Documentation
 
-Full API details are available in the Swagger:  
-[http://localhost:8080/api-docs](http://localhost:8080/api-docs)
+Full API details are available in the Swagger:
+[Swagger Documentation](https://app.swaggerhub.com/apis/2023SL93045/NftMarketplace/1.0.0) <br />
+Can be accessed locally in [http://localhost:8080/api-docs](http://localhost:8080/api-docs)
+
 
 # Testing
 
