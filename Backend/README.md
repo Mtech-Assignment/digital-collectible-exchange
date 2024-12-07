@@ -47,9 +47,11 @@ Follow these steps to set up the application locally:
    npm install
 
 4. Create a .env file and add the necessary environment variables (e.g., API keys, database connection).
+    
+5. Need to have a MongoDB(either a docker image or local db) running and keep the DB connectin URL in the .env file so the index.js file can use it.
 
 
-5. Start the application:
+6. Start the application:
     ```bash
    npm run start
 
