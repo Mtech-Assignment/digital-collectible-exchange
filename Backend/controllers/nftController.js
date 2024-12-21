@@ -263,6 +263,10 @@ exports.mintNFTJob = async (req, res) => {
             return res.status(400).json({ success: false, message: `Some field of NFT not found` });;
         }
 
+        if (price <= 0) {
+            return res.status(403).json({ success: false, message: `Negative price or Zero price not allowed` });
+        }
+
         const nftMintingTransactionInitiationMessage = 'NFT Minting transaction started successfully.';
         const asyncListJob = new AsyncJobStatus({ user: user.username, status: 'PENDING', message: nftMintingTransactionInitiationMessage });
         await asyncListJob.save();
@@ -553,6 +557,10 @@ exports.buyNFTJob = async (req, res) => {
 // Sell an NFT
 exports.resellNFT = async (req, res) => {
     const { itemId } = req.params;
+    const { resell_price } = req.body;
+    if (resell_price <= 0) {
+        return res.status(403).json({ success: false, message: `Negative price or Zero price not allowed` });
+    }
 
     try {
         // Fetch user and decrypt the mnemonic
@@ -576,7 +584,7 @@ exports.resellNFT = async (req, res) => {
         console.log();
 
         const sellerWallet = await getUserWallet(user);
-        const tx = await nftService.resellNFT(itemId, req.body.resell_price, sellerWallet);
+        const tx = await nftService.resellNFT(itemId, resell_price, sellerWallet);
         if (!tx.item_listed) {
             return res.status(400).json({ success: false, message: error.message });
         }
@@ -589,6 +597,10 @@ exports.resellNFT = async (req, res) => {
 // Sell an NFT (Async)
 exports.resellNFTJob = async (req, res) => {
     const { itemId } = req.params;
+    const { resell_price } = req.body;
+    if (resell_price <= 0) {
+        return res.status(403).json({ success: false, message: `Negative price or Zero price not allowed` });
+    }
 
     try {
         // Fetch user and decrypt the mnemonic
@@ -616,7 +628,7 @@ exports.resellNFTJob = async (req, res) => {
         const asyncListJob = new AsyncJobStatus({ user: user.username, status: 'PENDING', message: relistingTransactionInitiationMessage });
         await asyncListJob.save();
 
-        nftService.resellNFT(itemId, req.body.resell_price, sellerWallet)
+        nftService.resellNFT(itemId, resell_price, sellerWallet)
         .then(async (tx) => {
             if (!tx.item_listed) {
                 await AsyncJobStatus.findByIdAndUpdate(
@@ -651,6 +663,10 @@ exports.resellNFTJob = async (req, res) => {
 exports.userTransactions = async (req, res) => {
     const { userId } = req.params;
     const { page, offset } = req.query;
+    if (offset > 100 || offset <= 0) {
+        return res.status(403).json({ success: false, message: `Negative offset or offset more than 100 not allowed` });
+    } 
+
     try {
         // Fetch user and decrypt the mnemonic
         const user = await User.findById(req.user.id);
