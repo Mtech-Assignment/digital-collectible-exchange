@@ -21,13 +21,18 @@ async function getUserWallet(user) {
     return wallet;
 }
 
-function calculateNextWindowTimeInMinutes(lastUpdateTime) {
-    const thresholdMins = 5;
-    const currentTimestamp = Math.floor(Date.now() / 1000);
-    const differenceInSeconds = currentTimestamp - lastUpdateTime;
-    const differenceInMins = differenceInSeconds / 60;
-    
-    return thresholdMins - differenceInMins;
+async function isUserRequestRateLimited(user) {
+    const rateLimitIntervalInSeconds = 60;
+    if(user.lastLimitUpdateTime + rateLimitIntervalInSeconds <= (Date.now() / 1000)) {
+        await User.findByIdAndUpdate(
+            user._id.toString(),
+            { lastLimitUpdateTime: Math.floor(Date.now() / 1000), numReqLeft: 5 }
+        );
+        user.numReqLeft = 5;
+        return false;
+    } else {
+        return true;
+    }
 }
 
 exports.getListedNFTOnMarketplace = async (req, res) => {
@@ -59,20 +64,14 @@ exports.getUserOwnedNFTOnMarketplace = async (req, res) => {
     const { search } = req.query;
     try {
         // Fetch user and decrypt the mnemonic
-        const user = await User.findById(req.user.id);
+        let user = await User.findById(req.user.id);
         if (!user || user.id !== userId) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
 
         if (user.numReqLeft <= 0) {
-            const retryTime = calculateNextWindowTimeInMinutes(user.lastLimitUpdateTime);
-            if(Math.ceil(retryTime) <= 0) {
-                await User.findByIdAndUpdate(
-                    user._id.toString(),
-                    { lastLimitUpdateTime: Math.floor(Date.now() / 1000), numReqLeft: 2 }
-                );
-            } else {
-                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${retryTime} mins` })
+            if (await isUserRequestRateLimited(user)) {
+                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${(user.lastLimitUpdateTime + 60 - (Date.now() / 1000)) / 60} mins` })
             }
         }
 
@@ -113,15 +112,10 @@ exports.getUserListedNFTOnMarketplace = async (req, res) => {
         if (!user || userId !== user.id) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
+
         if (user.numReqLeft <= 0) {
-            const retryTime = calculateNextWindowTimeInMinutes(user.lastLimitUpdateTime);
-            if(Math.ceil(retryTime) <= 0) {
-                await User.findByIdAndUpdate(
-                    user._id.toString(),
-                    { lastLimitUpdateTime: Math.floor(Date.now() / 1000), numReqLeft: 2 }
-                );
-            } else {
-                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${retryTime} mins` })
+            if (await isUserRequestRateLimited(user)) {
+                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${(user.lastLimitUpdateTime + 60 - (Date.now() / 1000)) / 60} mins` })
             }
         }
 
@@ -171,15 +165,10 @@ exports.mintNFT = async (req, res) => {
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
+
         if (user.numReqLeft <= 0) {
-            const retryTime = calculateNextWindowTimeInMinutes(user.lastLimitUpdateTime);
-            if(Math.ceil(retryTime) <= 0) {
-                await User.findByIdAndUpdate(
-                    user._id.toString(),
-                    { lastLimitUpdateTime: Math.floor(Date.now() / 1000), numReqLeft: 2 }
-                );
-            } else {
-                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${retryTime} mins` })
+            if (await isUserRequestRateLimited(user)) {
+                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${(user.lastLimitUpdateTime + 60 - (Date.now() / 1000)) / 60} mins` })
             }
         }
 
@@ -238,15 +227,10 @@ exports.mintNFTJob = async (req, res) => {
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
+
         if (user.numReqLeft <= 0) {
-            const retryTime = calculateNextWindowTimeInMinutes(user.lastLimitUpdateTime);
-            if(Math.ceil(retryTime) <= 0) {
-                await User.findByIdAndUpdate(
-                    user._id.toString(),
-                    { lastLimitUpdateTime: Math.floor(Date.now() / 1000), numReqLeft: 2 }
-                );
-            } else {
-                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${retryTime} mins` })
+            if (await isUserRequestRateLimited(user)) {
+                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${(user.lastLimitUpdateTime + 60 - (Date.now() / 1000)) / 60} mins` })
             }
         }
 
@@ -322,15 +306,10 @@ exports.listNFTOnMarketplace = async (req, res) => {
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
+
         if (user.numReqLeft <= 0) {
-            const retryTime = calculateNextWindowTimeInMinutes(user.lastLimitUpdateTime);
-            if(Math.ceil(retryTime) <= 0) {
-                await User.findByIdAndUpdate(
-                    user._id.toString(),
-                    { lastLimitUpdateTime: Math.floor(Date.now() / 1000), numReqLeft: 2 }
-                );
-            } else {
-                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${retryTime} mins` })
+            if (await isUserRequestRateLimited(user)) {
+                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${(user.lastLimitUpdateTime + 60 - (Date.now() / 1000)) / 60} mins` })
             }
         }
 
@@ -361,15 +340,10 @@ exports.listNftOnMarketplaceJob = async (req, res) => {
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
+
         if (user.numReqLeft <= 0) {
-            const retryTime = calculateNextWindowTimeInMinutes(user.lastLimitUpdateTime);
-            if(Math.ceil(retryTime) <= 0) {
-                await User.findByIdAndUpdate(
-                    user._id.toString(),
-                    { lastLimitUpdateTime: Math.floor(Date.now() / 1000), numReqLeft: 2 }
-                );
-            } else {
-                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${retryTime} mins` })
+            if (await isUserRequestRateLimited(user)) {
+                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${(user.lastLimitUpdateTime + 60 - (Date.now() / 1000)) / 60} mins` })
             }
         }
 
@@ -426,15 +400,10 @@ exports.getAsyncJobStatus = async (req, res) => {
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
+
         if (user.numReqLeft <= 0) {
-            const retryTime = calculateNextWindowTimeInMinutes(user.lastLimitUpdateTime);
-            if(Math.ceil(retryTime) <= 0) {
-                await User.findByIdAndUpdate(
-                    user._id.toString(),
-                    { lastLimitUpdateTime: Math.floor(Date.now() / 1000), numReqLeft: 2 }
-                );
-            } else {
-                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${retryTime} mins` })
+            if (await isUserRequestRateLimited(user)) {
+                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${(user.lastLimitUpdateTime + 60 - (Date.now() / 1000)) / 60} mins` })
             }
         }
 
@@ -488,15 +457,10 @@ exports.buyNFT = async (req, res) => {
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
+
         if (user.numReqLeft <= 0) {
-            const retryTime = calculateNextWindowTimeInMinutes(user.lastLimitUpdateTime);
-            if(Math.ceil(retryTime) <= 0) {
-                await User.findByIdAndUpdate(
-                    user._id,
-                    { lastLimitUpdateTime: Math.floor(Date.now() / 1000), numReqLeft: 2 }
-                );
-            } else {
-                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${retryTime} mins` })
+            if (await isUserRequestRateLimited(user)) {
+                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${(user.lastLimitUpdateTime + 60 - (Date.now() / 1000)) / 60} mins` })
             }
         }
 
@@ -531,15 +495,10 @@ exports.buyNFTJob = async (req, res) => {
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
+
         if (user.numReqLeft <= 0) {
-            const retryTime = calculateNextWindowTimeInMinutes(user.lastLimitUpdateTime);
-            if(Math.ceil(retryTime) <= 0) {
-                await User.findByIdAndUpdate(
-                    user._id,
-                    { lastLimitUpdateTime: Math.floor(Date.now() / 1000), numReqLeft: 2 }
-                );
-            } else {
-                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${retryTime} mins` })
+            if (await isUserRequestRateLimited(user)) {
+                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${(user.lastLimitUpdateTime + 60 - (Date.now() / 1000)) / 60} mins` })
             }
         }
 
@@ -597,15 +556,10 @@ exports.resellNFT = async (req, res) => {
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
+
         if (user.numReqLeft <= 0) {
-            const retryTime = calculateNextWindowTimeInMinutes(user.lastLimitUpdateTime);
-            if(Math.ceil(retryTime) <= 0) {
-                await User.findByIdAndUpdate(
-                    user._id.toString(),
-                    { lastLimitUpdateTime: Math.floor(Date.now() / 1000), numReqLeft: 2 }
-                );
-            } else {
-                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${retryTime} mins` })
+            if (await isUserRequestRateLimited(user)) {
+                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${(user.lastLimitUpdateTime + 60 - (Date.now() / 1000)) / 60} mins` })
             }
         }
 
@@ -638,15 +592,10 @@ exports.resellNFTJob = async (req, res) => {
         if (!user) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
+
         if (user.numReqLeft <= 0) {
-            const retryTime = calculateNextWindowTimeInMinutes(user.lastLimitUpdateTime);
-            if(Math.ceil(retryTime) <= 0) {
-                await User.findByIdAndUpdate(
-                    user._id,
-                    { lastLimitUpdateTime: Math.floor(Date.now() / 1000), numReqLeft: 2 }
-                );
-            } else {
-                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${retryTime} mins` })
+            if (await isUserRequestRateLimited(user)) {
+                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${(user.lastLimitUpdateTime + 60 - (Date.now() / 1000)) / 60} mins` })
             }
         }
 
@@ -704,15 +653,10 @@ exports.userTransactions = async (req, res) => {
         if (!user || user.id !== userId) {
             return res.status(404).json({ success: false, message: 'User not found' });
         }
+
         if (user.numReqLeft <= 0) {
-            const retryTime = calculateNextWindowTimeInMinutes(user.lastLimitUpdateTime);
-            if(Math.ceil(retryTime) <= 0) {
-                await User.findByIdAndUpdate(
-                    user._id.toString(),
-                    { lastLimitUpdateTime: Math.floor(Date.now() / 1000), numReqLeft: 2}
-                );
-            } else {
-                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${retryTime} mins` })
+            if (await isUserRequestRateLimited(user)) {
+                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${(user.lastLimitUpdateTime + 60 - (Date.now() / 1000)) / 60} mins` })
             }
         }
 
@@ -742,14 +686,8 @@ exports.burnNFT = async (req, res) => {
         }
 
         if (user.numReqLeft <= 0) {
-            const retryTime = calculateNextWindowTimeInMinutes(user.lastLimitUpdateTime);
-            if(Math.ceil(retryTime) <= 0) {
-                await User.findByIdAndUpdate(
-                    user._id.toString(),
-                    { lastLimitUpdateTime: Math.floor(Date.now() / 1000), numReqLeft: 2 }
-                );
-            } else {
-                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${retryTime} mins` })
+            if (await isUserRequestRateLimited(user)) {
+                return res.status(429).json({ success: false, message: `You have exhausted your api call limit. Retry after ${(user.lastLimitUpdateTime + 60 - (Date.now() / 1000)) / 60} mins` })
             }
         }
 
