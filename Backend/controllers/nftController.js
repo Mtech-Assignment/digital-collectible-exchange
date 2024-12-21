@@ -197,6 +197,10 @@ exports.mintNFT = async (req, res) => {
             return res.status(400).json({ success: false, message: `Some field of NFT not found` });;
         }
 
+        if (price <= 0) {
+            return res.status(403).json({ success: false, message: `Negative price or Zero price not allowed` });
+        }
+
         const uploadedJsonResponse = await pinata.upload.json({ name, description, price, image: fileUploadUrl });
         const tokenURI = `https://${pinataGateway}/ipfs/${uploadedJsonResponse.IpfsHash}`;
 
