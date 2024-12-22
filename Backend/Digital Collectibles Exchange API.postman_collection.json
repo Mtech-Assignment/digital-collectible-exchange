@@ -1,0 +1,941 @@
+{
+	"info": {
+		"_postman_id": "26f4c769-a59b-40c9-8e04-70f737f4d92a",
+		"name": "Digital Collectibles Exchange API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "35105121",
+		"_collection_link": "https://ben100-0358.postman.co/workspace/Ben10-Workspace~ff1f1939-3f72-4f1e-8df5-6f10d4949e43/collection/35105121-26f4c769-a59b-40c9-8e04-70f737f4d92a?action=share&source=collection_link&creator=35105121"
+	},
+	"item": [
+		{
+			"name": "Register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"chandankumar\",\r\n    \"password\": \"chandankumar\",\r\n    \"mnemonic\": \"enroll forest account junk agent start hybrid envelope bounce six patrol claw\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/users",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"chandankumar\",\r\n    \"password\": \"chandankumar\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/users/sessions",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"sessions"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "wallet-info",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/users/{{user1Id}}/wallet",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{user1Id}}",
+						"wallet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "wallet-info mnemonic",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"mnemonic\": \"host crunch ocean little earn harsh neck chimney holiday shield test you\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/users/wallet",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"wallet"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mint NFT",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "Ganesha Lord 4",
+							"type": "text"
+						},
+						{
+							"key": "price",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "He is Lord Ganesha",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/I528640/Pictures/Screenshots/ganesha.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/nft/mint",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"nft",
+						"mint"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get NFT details",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/nft/{{nftId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"nft",
+						"{{nftId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List NFT on marketplace",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"listingPrice\": 20\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/marketplace/{{nftId}}/listings",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"marketplace",
+						"{{nftId}}",
+						"listings"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Listed NFT on marketplace",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/marketplace/listings?search=monkey",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"marketplace",
+						"listings"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "monkey"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Listed NFT on marketplace",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/users/{{user1Id}}/nft?listed=true&search=monkey",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{user1Id}}",
+						"nft"
+					],
+					"query": [
+						{
+							"key": "listed",
+							"value": "true"
+						},
+						{
+							"key": "search",
+							"value": "monkey"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buy NFT",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/marketplace/listings/{{itemId}}?op=buy",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"marketplace",
+						"listings",
+						"{{itemId}}"
+					],
+					"query": [
+						{
+							"key": "op",
+							"value": "buy"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Owned NFT",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/users/{{user1Id}}/nft?search=lord",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{user1Id}}",
+						"nft"
+					],
+					"query": [
+						{
+							"key": "search",
+							"value": "lord"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Resell User Owned NFT",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"resell_price\": 60\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/marketplace/listings/{{itemId}}?op=resell",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"marketplace",
+						"listings",
+						"{{itemId}}"
+					],
+					"query": [
+						{
+							"key": "op",
+							"value": "resell"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete NFT",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/marketplace/{{itemId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"marketplace",
+						"{{itemId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get User Transactions",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/users/{{user1Id}}/transactions?offset=2",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"users",
+						"{{user1Id}}",
+						"transactions"
+					],
+					"query": [
+						{
+							"key": "offset",
+							"value": "2"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Mint NFT (Async)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "Ganesha Lord 5",
+							"type": "text"
+						},
+						{
+							"key": "price",
+							"value": "10",
+							"type": "text"
+						},
+						{
+							"key": "description",
+							"value": "Every new work should be started in the name of lord ganesha",
+							"type": "text"
+						},
+						{
+							"key": "file",
+							"type": "file",
+							"src": "/C:/Users/I528640/Pictures/Screenshots/ganesha.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/nft/mint/jobs",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"nft",
+						"mint",
+						"jobs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get NFT Minting Job Status",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/nft/mint/jobs/{{jobId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"nft",
+						"mint",
+						"jobs",
+						"{{jobId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "List NFT on marketplace (Async)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"listingPrice\": 2\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/marketplace/{{nftId}}/listings/jobs",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"marketplace",
+						"{{nftId}}",
+						"listings",
+						"jobs"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get NFT Listing Job Status",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/marketplace/listings/jobs/{{jobId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"marketplace",
+						"listings",
+						"jobs",
+						"{{jobId}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Buy NFT (Async)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/marketplace/listings/{{itemId}}/jobs?op=buy",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"marketplace",
+						"listings",
+						"{{itemId}}",
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "op",
+							"value": "buy"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Resell User Owned NFT (Async)",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user2}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"resell_price\": 6\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/marketplace/listings/{{itemId}}/jobs?op=resell",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"marketplace",
+						"listings",
+						"{{itemId}}",
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "op",
+							"value": "resell"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Buy NFT or Resell User Owned NFT Job Status",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{user1}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3002/api/v1/marketplace/listings/{{itemId}}/jobs/{{jobId}}",
+					"host": [
+						"localhost"
+					],
+					"port": "3002",
+					"path": [
+						"api",
+						"v1",
+						"marketplace",
+						"listings",
+						"{{itemId}}",
+						"jobs",
+						"{{jobId}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
