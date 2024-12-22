@@ -61,6 +61,15 @@ Full API details are available in the Swagger:
 [Swagger Documentation](https://app.swaggerhub.com/apis/2023SL93045/NftMarketplace/1.0.0) <br />
 Can be accessed locally in [http://localhost:8080/api-docs](http://localhost:8080/api-docs)
 
+# API Use Cases 
+![Screenshot 2024-12-22 173547](https://github.com/user-attachments/assets/a92189e7-abc0-447c-929a-e334665d0569)
+
+![Screenshot 2024-12-22 173604](https://github.com/user-attachments/assets/7af61b20-872b-4020-890d-79c92bc7c487)
+
+
+# Architecture
+![Screenshot 2024-12-22 173716](https://github.com/user-attachments/assets/6740e2c1-4471-42d7-bf5c-b4ab6308a61a)
+
 
 # Testing
 
