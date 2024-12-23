@@ -766,6 +766,8 @@ paths:
       tags:
         - NFT MarketPlace (Sync)
       summary: Get All Listed NFT on marketplace (Sorted by Price {ASC})
+      description : >
+        GET all marketplace listing by List View
       security:
         - noauthAuth: []
       parameters:
@@ -846,6 +848,8 @@ paths:
       tags:
         - NFT MarketPlace (Sync) 
       summary: Get User Listed NFT on marketplace or user owned NFTs (Sorted by Price {ASC})
+      description : >
+        GET all user NFT by List View
       security:
         - bearerAuth: []
       parameters:
@@ -1031,7 +1035,8 @@ paths:
         - NFT MarketPlace (Sync)
       summary: Get User Transactions (Sorted by TimeStamp {Most recent on Top})
       description: >
-        This endpoint has a Rate Limit of 5 Req/Min
+        This endpoint has a Rate Limit of 5 Req/Min.
+        GET all previous transactions in List View
       security:
         - bearerAuth: []
       parameters:
@@ -1458,3 +1463,6 @@ paths:
                       type: string
                       description: Error message explaining the issue.
                       
+                      
+  
+    
