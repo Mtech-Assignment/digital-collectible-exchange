@@ -12,6 +12,17 @@ components:
     noauthAuth:
       type: http
       scheme: noauth
+  responses:
+    TooManyRequests:
+      description: Too many requests - rate limit exceeded.
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+                example: "Too many requests, please try again later."
   schemas:
     Transaction:
       type: object
@@ -370,6 +381,8 @@ paths:
       tags:
         - NFT
       summary: Mint NFT
+      description: >
+        This endpoint has a Rate Limit of 5 Req/Min
       requestBody:
         content:
           multipart/form-data:
@@ -492,6 +505,8 @@ paths:
       tags:
         - NFT (Async)
       summary: Mint NFT (Async)
+      description: >
+        This endpoint has a Rate Limit of 5 Req/Min
       requestBody:
         content:
           multipart/form-data:
@@ -587,6 +602,8 @@ paths:
       tags:
         - NFT (Async)
       summary: Get NFT Minting Job Status
+      description: >
+        This endpoint has a Rate Limit of 5 Req/Min
       security:
         - bearerAuth: []
       parameters:
@@ -661,6 +678,8 @@ paths:
       tags:
         - NFT MarketPlace (Sync)
       summary: List NFT on marketplace
+      description: >
+        This endpoint has a Rate Limit of 5 Req/Min
       requestBody:
         content:
           application/json:
@@ -921,6 +940,8 @@ paths:
       tags:
         - NFT MarketPlace (Sync)
       summary: Buy NFT or Resell User Owned NFT
+      description: >
+        This endpoint has a Rate Limit of 5 Req/Min
       requestBody:
         content:
           application/json:
@@ -1009,6 +1030,8 @@ paths:
       tags:
         - NFT MarketPlace (Sync)
       summary: Get User Transactions (Sorted by TimeStamp {Most recent on Top})
+      description: >
+        This endpoint has a Rate Limit of 5 Req/Min
       security:
         - bearerAuth: []
       parameters:
@@ -1071,6 +1094,8 @@ paths:
       tags:
         - NFT MarketPlace (Sync)
       summary: Delete NFT
+      description: >
+        This endpoint has a Rate Limit of 5 Req/Min
       security:
         - bearerAuth: []
       parameters:
@@ -1137,6 +1162,8 @@ paths:
       tags:
         - NFT MarketPlace (Async)
       summary: List NFT on marketplace (Async)
+      description: >
+        This endpoint has a Rate Limit of 5 Req/Min
       requestBody:
         content:
           application/json:
@@ -1277,6 +1304,8 @@ paths:
       tags:
         - NFT MarketPlace (Async)
       summary: Buy NFT or Resell User Owned NFT (Async)
+      description: >
+        This endpoint has a Rate Limit of 5 Req/Min
       requestBody:
         content:
           application/json:
@@ -1360,6 +1389,8 @@ paths:
       tags:
         - NFT MarketPlace (Async)
       summary: Get Buy NFT Job Status
+      description: >
+        This endpoint has a Rate Limit of 5 Req/Min
       security:
         - bearerAuth: []
       parameters:
@@ -1427,6 +1458,3 @@ paths:
                       type: string
                       description: Error message explaining the issue.
                       
-                      
-  
-    
