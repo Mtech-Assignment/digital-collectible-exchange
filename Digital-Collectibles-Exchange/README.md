@@ -42,6 +42,7 @@ Complete Full Stack NFT Marketplace (Decentralized Application) using solidity l
 - Good UI
 - Using the custom token(**CSDP**) to make any transaction [See the integration details](#integration-of-csdp-marketplace-token-for-trading)
 - Buy **CSDP** from the Dapp.
+- View your **Last Transactions** done in the Dapp.
 
 _NFT Marketplace Contract Deployed on **Holesky Test Network**_ -> 0xFF17205b7ada750BD9553A1c9378bE547aaF8d47
 _NFT Contract Deployed on **Holesky Test Network**_ -> 0xb99Ce50Eb50dD6276b3A385f845839188cc0c1d0
